@@ -19,3 +19,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Company Specific data
+/src/company
