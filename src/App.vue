@@ -1,14 +1,32 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <el-container>
+        <el-header height="100px"> Notifications</el-header>
+        <el-main>
+          <router-view />
+        </el-main>
+      </el-container> 
+      <!-- <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link> -->
     </div>
-    <router-view />
   </div>
 </template>
 
-<style>
+<style scope>
+.el-header {
+    background-color: black;
+    color: white;
+    text-align: center;
+    line-height: 100px;
+    /* border: 3px solid gray; */
+    font-size:20px
+  }
+
+  .el-container{
+    /* border: 1px solid blue; */
+  }
+
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -16,7 +34,7 @@
   text-align: center;
   color: #2c3e50;
 }
-#nav {
+/* #nav {
   padding: 30px;
 }
 
@@ -27,5 +45,5 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>
