@@ -14,13 +14,18 @@
 </template>
 
 <style scope>
+
+html{
+  min-width: 700px;
+}
+
 .el-header {
     background-color: black;
     color: white;
     text-align: center;
     line-height: 100px;
     /* border: 3px solid gray; */
-    font-size:20px
+    font-size:20px;
   }
 
   .el-container{
@@ -33,6 +38,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  min-width: 600px;
 }
 /* #nav {
   padding: 30px;
