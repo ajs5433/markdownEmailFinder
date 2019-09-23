@@ -11,6 +11,9 @@
       Drag file here or click to Upload
       </p>
       <progress id="progress-bar"></progress>
+      <el-progress 
+        :percentage ="percentage" 
+        :show-text="true"></el-progress>
     </div>
 
     <el-dialog
@@ -29,6 +32,9 @@
 
 <script>
 import Instructions from '@/company/components/Instructions'
+import Tickets from '@/company/Tickets'
+import Papa from 'papaparse'
+
 // https://www.raymondcamden.com/2019/08/08/drag-and-drop-file-upload-in-vuejs
 
 export default {
@@ -36,36 +42,27 @@ export default {
     return{
       uploadDisabled: false,
       visible: false,
-      fileList:[]
+      fileList:[],
+      percentage : 0
     }
   },
   components:{
     Instructions
   },
   methods:{
-    drag(e){},
-    addFile(e){
-      console.log(e);
-    },
-    dragFile(e){
-      e.preventDefault()
-      let file = e.dataTransfer.files;
-      if (!file)
-        return;
-      console.log(file)
-    }
+  
   },
   mounted(){
+    let self = this
     let fileLoader = document.getElementById('load-file-btn');
     let dragArea = document.getElementById('drag-area');
     let progressBar = document.getElementById('progress-bar');
+    let tickets = []
 
     fileLoader.addEventListener('change',(e)=>{
         let inputFile = e.target.files[0];
-
         if(!inputFile)
-          console.log('no input file')
-        
+          return;
         readFile(inputFile)
       });
 
@@ -92,24 +89,54 @@ export default {
 
     function readFile(inputFile){
       let reader = new FileReader()
+
       progressBar.style.display='block'
 
-      reader.onprogress = showProgress
+
+      /* To modify later!! */
+      reader.onprogress = (e)=>{
+        var percentage =  parseFloat( (( e.loaded * 100 ) / e.total).toFixed(2)  )
+        // var percentage =  parseInt( (( e.loaded * 100 ) / e.total)  )
+        // var percentage =  e.loaded * 100  / e.total
+        showProgress(percentage)
+
+        progressBar.value = e.loaded;
+        progressBar.max = e.total;
+      }
+
       reader.onload = function (e){
         var data = e.currentTarget.result;
         progressBar.style.display = 'none'
-        console.log(data)
+        // old
+        // var csvToTickets = new CSVParser()
+        // csvToTickets.load(data)
+
+
+        // console.log('start processing')
+        processCSV(data)
+
+        // console.log('done processing')
       }
       reader.readAsText(inputFile)
     }
-
-    function showProgress(e){
-      progressBar.value = e.loaded;
-      progressBar.max = e.total;
+    
+    function showProgress(percentage){
+      self.percentage = percentage;
     }
 
+    function processCSV(data){
+      Papa.parse(data, {
+        header:true, 
+        complete(results){
+            console.log(results.data.length)
+            tickets = results.data
+            Tickets.removeFaultyTickets(tickets, true);
+            Tickets.addAdditionalFields(tickets)
+            console.log(tickets)
+        }
+      });
+    }
   }
-  
 };
 </script>
 
@@ -160,18 +187,10 @@ a:hover {
   font-size: 12px;
 }
 
-#importtxt {
-  transition: all 0.8s;
-  transition-timing-function: ease;
-}
-#importtxt:hover {
-  color: black;
-  font-size: 25px;
-  transform: scale(2);
-}
-
-#progress-bar{
+#progress-bar::-webkit-progress-bar{
   display:none;
+  /* border-radius: 5px;
+  width:50px; */
 }
 
 

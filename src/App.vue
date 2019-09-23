@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <el-container>
-        <el-header height="100px"> Notifications</el-header>
+        <el-header height="100px"> Bienvo</el-header>
         <el-main>
           <router-view />
         </el-main>
@@ -14,10 +14,6 @@
 </template>
 
 <style scope>
-
-html{
-  min-width: 700px;
-}
 
 .el-header {
     background-color: black;
