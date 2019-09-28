@@ -11,7 +11,7 @@ import Vue from "vue";
 import Import from "@/components/Import.vue"; // @ is an alias to /src
 
 export default Vue.extend({
-  name: "home",
+  name: "import",
   components: {
     Import
   }

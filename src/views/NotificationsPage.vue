@@ -1,0 +1,42 @@
+<template>
+    <div class="notifications">
+        <div id="search-area">
+                <div id="search-bar" >
+                <!-- <el-row id="search-bar"> -->
+                    <el-input v-model="keyword" placeholder="Keyword"></el-input>
+                    <el-button icon="el-icon-refresh-left" size="small"> </el-button>
+                    <!-- <el-badge :value="filteredTicketsLength" class="item"> -->
+                    <!-- <el-button size="small">results</el-button> -->
+                    <!-- </el-badge> -->
+                <!-- </el-row> -->
+                </div>
+        <Info/>
+        <Display/>
+        <Selector/>
+        </div>
+    </div>
+</template>
+
+<script>
+import Vue from 'vue'
+import Selector from '@/components/Selector.vue'
+import Display from '@/components/Display.vue'
+import Info from '@/components/Info.vue'
+
+export default Vue.extend({
+    name:"notifications",
+    components: {
+        Selector, Info, Display
+    },
+    data(){ return{
+            keyword: '' 
+        }
+    }
+})
+</script>
+
+<style scoped>
+#search-bar{
+    display:flex;
+}
+</style>

@@ -2,7 +2,16 @@
   <div id="app">
     <div id="nav">
       <el-container>
-        <el-header height="100px"> Bienvo</el-header>
+          <el-header height="100px">
+            <router-link to="/import">
+              <el-button icon="el-icon-upload" ></el-button>
+            </router-link>
+
+            <router-link to="/">
+            Notifications
+            </router-link>
+
+          </el-header>
         <el-main>
           <router-view />
         </el-main>
@@ -13,7 +22,7 @@
   </div>
 </template>
 
-<style scope>
+<style scoped>
 
 .el-header {
     background-color: black;
@@ -24,10 +33,6 @@
     font-size:20px;
   }
 
-  .el-container{
-    /* border: 1px solid blue; */
-  }
-
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -36,16 +41,5 @@
   color: #2c3e50;
   min-width: 600px;
 }
-/* #nav {
-  padding: 30px;
-}
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-} */
 </style>

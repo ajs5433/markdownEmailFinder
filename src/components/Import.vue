@@ -57,7 +57,6 @@ export default {
     let fileLoader = document.getElementById('load-file-btn');
     let dragArea = document.getElementById('drag-area');
     let progressBar = document.getElementById('progress-bar');
-    let tickets = []
 
     fileLoader.addEventListener('change',(e)=>{
         let inputFile = e.target.files[0];
@@ -128,11 +127,12 @@ export default {
       Papa.parse(data, {
         header:true, 
         complete(results){
-            console.log(results.data.length)
-            tickets = results.data
-            Tickets.removeFaultyTickets(tickets, true);
-            Tickets.addAdditionalFields(tickets)
-            console.log(tickets)
+            let tickets = []
+            tickets = Tickets.removeFaultyTickets(results.data, false);
+            Tickets.addProperties(tickets)
+            self.$store.commit('addTickets',tickets)
+            
+            // console.log(tickets.length)
         }
       });
     }
@@ -140,7 +140,7 @@ export default {
 };
 </script>
 
-<style scope>
+<style scoped>
 /* Scoped ruins it */
 
 #drag-area{
