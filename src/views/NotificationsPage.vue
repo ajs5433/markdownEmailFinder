@@ -29,7 +29,17 @@ export default Vue.extend({
         Selector, Info, Display
     },
     data(){ return{
-            keyword: '' 
+
+        }
+    },
+    computed:{
+        keyword:{
+            get(){
+                return this.$store.state.keyword;
+            },
+            set(keyword){
+                this.$store.commit('setKeyword',keyword)
+            }
         }
     }
 })

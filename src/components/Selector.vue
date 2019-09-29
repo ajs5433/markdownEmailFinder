@@ -7,7 +7,7 @@
 
                     <!-- Prev Next -->
                     <div class="flex-row" id="results">
-                        <el-button @click="console.log('hi')" > {{ keywordMatchTicketsCount}} </el-button>
+                        <el-button @click="printTickets" > {{ filteredTicketsLength }} </el-button>
                         <el-button @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
                         <el-button @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
                     </div>
@@ -72,7 +72,7 @@
 export default {
     data(){
         return{
-            index : 0,
+            // index:0,
             vmodels:{
                 inputFields:{
                     sn_service: '',
@@ -99,32 +99,34 @@ export default {
         }
     },
     computed:{
-        totalTickets(){
-            // return this.$store.state.tickets.length
-        },
+        index : {
+                set(number){
+                    this.$store.commit('setIndex', number)
+                },
+                get(){
+                    return this.$store.state.index;
+                }
+            } ,
+        // totalTickets(){
+        //     return this.$store.state.tickets.length
+        // },
         activeTickets(){
-            var tickets = this.$store.state.tickets
-            var regex   = new RegExp(this.keyword,'i') 
-            return tickets.filter(t=>{
-                if (regex.test(t.email_subject)|regex.test(t.email_content))
-                    return true
-                if (regex.test(t.sn_short_description)|regex.test(t.sn_description))
-                    return true
-                return false
-            })
+            return this.$store.getters.activeTickets
         },
-
-        // working on this
         filteredTickets(){
-            var regex1 = new RegExp(this.vmodels.sn_service)
-            var regex2 = new RegExp(this.vmodels.sn_service_location)
+            var regex1 = new RegExp(this.vmodels.inputFields.sn_service)
+            var regex2 = new RegExp(this.vmodels.inputFields.sn_service_location)
             return this.activeTickets.filter(t=>{
-                if(!regex1.test(t.sn_service) | !regex1.test(t.sn_service_location))
+
+                if(!regex1.test(t.sn_service) || !regex2.test(t.sn_service_location))
                     return false
                 
                 for (var filter of Object.entries(this.filters.buttons)){
-                    console.log(filter)
+                    var [prop, val] = filter
+                    if(val && t[prop] != val)
+                        return false
                 }
+                return true;
             })  
         },
         filteredTicketsLength(){
@@ -208,12 +210,12 @@ export default {
         callback(formattedResults)
       },
         handleSelect(item) {
-        console.log(item);
+        // console.log(item);
       },
       notificationMessage(){
           this.$message({
         //   title: 'Error',
-          message: 'This is an info message',
+          message: 'This is an info message adpiha dphpiuhfpis hfpiahs fipahs oigf[hadsfp[ hsfhpa f[ahs f]asj oi[hsgoi[hagfhas]oihgfas[odhf a[oshf [aosdha[os dhf]as g[a oiug[has haoiu[gh aoi[jgfaois[ jfo[ais jf',
           type: 'error'
         });
       },
@@ -230,12 +232,20 @@ export default {
 
         // console.log()
       },
+
+      // check this, numbers repeat sometimes
       changeIndex(event){
+        //   console.log(this.index)
+        if (this.filteredTicketsLength==0)
+            return
         if(event.target.name === 'prev')
             this.index = (this.index==0)? this.filteredTicketsLength-1 : this.index - 1;
         else if(event.target.name==='next')
             this.index = (this.index==this.filteredTicketsLength-1)? 0 : this.index + 1;
-        console.log(this.index)
+        // console.log(this.index)
+      },
+      printTickets(){
+          console.log(this.activeTickets)
       }
 
     }
