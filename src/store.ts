@@ -24,7 +24,11 @@ export default new Vuex.Store({
                 return true
             return false
         })
-      }
+      },
+    activeTicket(state, getter){
+      var ticket:Ticket = getter.activeTickets[state.index]
+      return ticket
+    }
   },
   mutations: {
     addTickets(state, tickets){
