@@ -53,5 +53,6 @@ export default Vue.extend({
 
 #notif-area{
     display:flex;
+    justify-content: center;
 }
 </style>

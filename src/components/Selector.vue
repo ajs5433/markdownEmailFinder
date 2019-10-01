@@ -7,7 +7,7 @@
 
                     <!-- Prev Next -->
                     <div class="flex-row" id="results">
-                        <el-button @click="printTickets" > {{ filteredTicketsLength }} </el-button>
+                        <el-button @click="printTickets" > {{this.$store.state.index}} of {{ filteredTicketsLength }} </el-button>
                         <el-button @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
                         <el-button @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
                     </div>
@@ -37,11 +37,12 @@
                 <!-- Select time -->
                 <div class="grid-row" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
                     <div>
-                        <el-checkbox v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
+                        <el-checkbox @change="dateInput.method" v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
                         <span> {{ dateInput.label }}</span>
                     </div>
                     <div>
                         <el-date-picker
+                            @change="dateInput.method"
                             v-model="vmodels.dateSelections[dateInput.key]"
                             type="datetime"
                             placeholder="Select date and time">
@@ -73,6 +74,9 @@ export default {
     data(){
         return{
             // index:0,
+            startTimeStr: '**Start Date Time:** ',
+            endTimeStr: '**End Date Time:** ',
+            delete:'',
             vmodels:{
                 inputFields:{
                     sn_service: '',
@@ -144,8 +148,8 @@ export default {
                         query   : this.queryService
                     },
                     sn_service_location:{
-                        key     :  this.ticketInfo.sn_service_location.name,
-                        label   :  this.ticketInfo.sn_service_location.label,
+                        key     : this.ticketInfo.sn_service_location.name,
+                        label   : this.ticketInfo.sn_service_location.label,
                         query   : this.queryServiceLocation
                     }
                 },
@@ -167,10 +171,12 @@ export default {
                     startTime:{
                         key     : 'start_time',
                         label   : 'Start Time',
+                        method  : this.modifyStartTime
                     },
                     endTime:{
                         key     : 'end_time',
                         label   : 'End Time',
+                        method  : this.modifyEndTime
                     }
                 }
             }
@@ -181,11 +187,53 @@ export default {
         serviceLocations(){ 
             return this.ticketInfo.sn_service_location.options.map(opt=>opt.name)
         },
+    //     startTime:{
+    //         set(time){
+    //             // console.log('inside here')
+    //             // // var startT = this.vmodels.checkbox.start_time? this.vmodels.dateSelections.start_time : '';
+    //             // console.log(time)
+    //             // this.tmpTime = time;
+    //             // var startT = this.startTimeStr +  (this.vmodels.checkbox.start_time? 'true' : 'false' )
+    //             // console.log(startT)
+    //             // this.$store.commit('changeStartTime', startT)  
+    //             this.delete = this.vmodels.checkbox.start_time
+    //         },
+    //         get(){
+    //             // var startT = this.vmodels.checkbox.start_time? this.vmodels.dateSelections.start_time : '';
+    //             // return this.$store.state.startTime;
+    //             if (this.vmodels.checkbox.start_time){
+    //                 console.log('ads')
+    //             }
+    //             return this.delete
+    //         }
+    //     },
+    //     endTime:{
+    //         set(time){
+    //             this.$store.commit('changeEndTime', endT)
+    //         },
+    //         get(){
+    //             // if(this.vmodels.checkbox.end_time)
+    //             //     console.log('')
+    //             // else if (this.vmodels.dateSelections.end_time)
+    //             //     console.log('')
+    //             return this.$store.state.startTime;
+    //         }
+    //     }
     },
     methods:{
     // handleSelect(item) {
     //     console.log(item);
-    //   },
+    //   },+
+    modifyStartTime(event){
+        var startT = this.vmodels.checkbox.start_time? this.startTimeStr + this.vmodels.dateSelections.start_time : '';
+        this.$store.commit('changeStartTime', startT)  
+        console.log(startT)
+    },
+    modifyEndTime(event){
+        var endT = this.vmodels.checkbox.end_time? this.endTimeStr + this.vmodels.dateSelections.end_time : '';
+        this.$store.commit('changeEndTime', endT)  
+        console.log(endT)
+    },
     queryService(queryString, callback){
             var results = queryString ? this.services.filter(service=>{
                 var regex = new RegExp(queryString, 'i');

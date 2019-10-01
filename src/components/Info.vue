@@ -67,6 +67,7 @@ export default {
 <style scoped>
 
 #ticket-info{
+    font-size: 12px;
     padding: 20px;
     border: 1px solid red;
 
