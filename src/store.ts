@@ -7,6 +7,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    activeTicket: [],
+    lastCommId: 0,
     keyword: '',
     ticketInfo: TicketFields,
     tickets : [],
@@ -27,10 +29,10 @@ export default new Vuex.Store({
             return false
         })
       },
-    activeTicket(state, getter){
-      var ticket:Ticket = getter.activeTickets[state.index]
-      return ticket
-    },
+    // activeTicket(state, getter){
+    //   var ticket:Ticket = getter.activeTickets[state.index]
+    //   return ticket
+    // },
     notificationText(state, getter){
       var startTime = state.startTime 
       var endTime = state.endTime 
@@ -39,8 +41,8 @@ export default new Vuex.Store({
       var endTimeRegex = /(\*\*End.*Date.*Time.*)/
       var currentText = ''
 
-      if(getter.activeTicket)
-        currentText = getter.activeTicket.email_content || ' '
+      if(state.activeTicket)
+        currentText = state.activeTicket.email_content || ' '
 
       if (endTimeRegex.test(currentText) && startTimeRegex.test(currentText))
         currentText = currentText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
@@ -58,9 +60,9 @@ export default new Vuex.Store({
     addTickets(state, tickets){
       state.tickets = state.tickets.concat(tickets)
     }, 
-    setIndex(state, index){
-      state.index = index;
-    },
+    // setIndex(state, index){
+    //   state.index = index;
+    // },
     setFilteredTickets(state, tickets){
       state.filteredTickets = tickets;
     },
@@ -73,9 +75,16 @@ export default new Vuex.Store({
     changeEndTime(state, time){
       state.endTime = time
     },
+    setCommId(state, id){
+      state.lastCommId = id
+    },
     modifyNotificationText(state, modification){
       // console.log('requesting to save:')
       // console.log(modification)
+    },
+    setActiveTicket(state,ticket){
+      console.log(ticket)
+      state.activeTicket = ticket
     }
   },
   actions: {}

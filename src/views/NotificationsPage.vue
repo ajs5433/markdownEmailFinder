@@ -11,7 +11,7 @@
         </div>
 
         <div id="notif-area">
-            <Info/>
+            <!-- <Info/> -->
             <Display/>
             <Selector/>
         </div>

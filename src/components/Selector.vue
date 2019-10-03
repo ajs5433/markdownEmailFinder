@@ -7,7 +7,7 @@
 
                     <!-- Prev Next -->
                     <div class="flex-row" id="results">
-                        <el-button @click="printTickets" > {{this.$store.state.index}} of {{ filteredTicketsLength }} </el-button>
+                        <el-button @click="printTickets" > {{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </el-button>
                         <el-button @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
                         <el-button @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
                     </div>
@@ -42,12 +42,19 @@
                     </div>
                     <div>
                         <el-date-picker
+                            :id="'dateinput-' + dateInput.key"
                             @change="dateInput.method"
                             v-model="vmodels.dateSelections[dateInput.key]"
                             type="datetime"
+                            :picker-options="{
+                                step: '00:10'
+                            }"
+                            :disabled="filters.buttons.market===''"
+                            format="yyyy-MM-dd HH:mm:SS"
+                            :value-format="datetimeFormat[filters.buttons.market]"
                             placeholder="Select date and time">
                         </el-date-picker>
-                        <el-button icon="el-icon-time"></el-button>
+                        <el-button :name="dateInput.key" @click="timeNow" icon="el-icon-time"></el-button>
                     </div>
                 </div>
 
@@ -73,10 +80,20 @@
 export default {
     data(){
         return{
-            // index:0,
+            index:0,
+            // activeTicket: [], 
+            lastCommId: 0,
             startTimeStr: '**Start Date Time:** ',
             endTimeStr: '**End Date Time:** ',
             delete:'',
+            datetimeFormat:{
+                US: "MM-dd-yyyy hh:mm A",
+                UK: 'dd-MM-yyyy hh:mm A'
+            },
+            timezone:{
+                US: "ET",
+                UK: 'BST'
+            },
             vmodels:{
                 inputFields:{
                     sn_service: '',
@@ -95,7 +112,8 @@ export default {
                 buttons:{
                     organization : '',
                     plan_status : '',
-                    status: ''
+                    status: '',
+                    market: ''
                 }
             }, 
             ticketInfo: this.$store.state.ticketInfo,
@@ -103,25 +121,35 @@ export default {
         }
     },
     computed:{
-        index : {
-                set(number){
-                    this.$store.commit('setIndex', number)
-                },
-                get(){
-                    return this.$store.state.index;
-                }
-            } ,
+        // index : {
+        //         set(number){
+        //             this.$store.commit('setIndex', number)
+        //         },
+        //         get(){
+        //             return this.$store.state.index;
+        //         }
+        //     } ,
         // totalTickets(){
         //     return this.$store.state.tickets.length
         // },
+        activeTicket:{
+            set(ticket){
+                this.$store.commit('setActiveTicket', ticket)
+            },
+            get(){
+                return this.$store.getters.activeTicket
+            }
+        },
         activeTickets(){
             return this.$store.getters.activeTickets
         },
         filteredTickets(){
-            var regex1 = new RegExp(this.vmodels.inputFields.sn_service)
-            var regex2 = new RegExp(this.vmodels.inputFields.sn_service_location)
-            return this.activeTickets.filter(t=>{
-
+            var regex1 = new RegExp(this.vmodels.inputFields.sn_service);
+            var regex2 = new RegExp(this.vmodels.inputFields.sn_service_location);
+            var index = 0;
+            var lastCommId = this.lastCommId;
+            this.updateIndex()
+            var filteredT = this.activeTickets.filter(t=>{
                 if(!regex1.test(t.sn_service) || !regex2.test(t.sn_service_location))
                     return false
                 
@@ -132,6 +160,23 @@ export default {
                 }
                 return true;
             })  
+
+            // keeping the index in the last selected comm/ticket
+            if(filteredT.length){
+                filteredT.forEach((t, i)=>{
+                    // console.log(, t.comm_id)
+                    if(t.comm_id==lastCommId)
+                        index = i;
+                })
+    
+                this.updateIndex(index, filteredT[index], filteredT[index].comm_id)
+            }
+            
+            // this.index = index
+            // this.$store.commit('setIndex',index)
+            // this.$store.commit('setCommId', this.activeTickets[index].comm_id)
+
+            return filteredT;
         },
         filteredTicketsLength(){
             return this.filteredTickets.length;
@@ -165,6 +210,10 @@ export default {
                     status:{
                         key     : this.ticketInfo.status.name, 
                         options : this.ticketInfo.status.options
+                    },
+                    market:{
+                        key     : this.ticketInfo.market.name, 
+                        options : this.ticketInfo.market.options
                     }
                 },
                 dateSelections:{
@@ -187,66 +236,39 @@ export default {
         serviceLocations(){ 
             return this.ticketInfo.sn_service_location.options.map(opt=>opt.name)
         },
-    //     startTime:{
-    //         set(time){
-    //             // console.log('inside here')
-    //             // // var startT = this.vmodels.checkbox.start_time? this.vmodels.dateSelections.start_time : '';
-    //             // console.log(time)
-    //             // this.tmpTime = time;
-    //             // var startT = this.startTimeStr +  (this.vmodels.checkbox.start_time? 'true' : 'false' )
-    //             // console.log(startT)
-    //             // this.$store.commit('changeStartTime', startT)  
-    //             this.delete = this.vmodels.checkbox.start_time
-    //         },
-    //         get(){
-    //             // var startT = this.vmodels.checkbox.start_time? this.vmodels.dateSelections.start_time : '';
-    //             // return this.$store.state.startTime;
-    //             if (this.vmodels.checkbox.start_time){
-    //                 console.log('ads')
-    //             }
-    //             return this.delete
-    //         }
-    //     },
-    //     endTime:{
-    //         set(time){
-    //             this.$store.commit('changeEndTime', endT)
-    //         },
-    //         get(){
-    //             // if(this.vmodels.checkbox.end_time)
-    //             //     console.log('')
-    //             // else if (this.vmodels.dateSelections.end_time)
-    //             //     console.log('')
-    //             return this.$store.state.startTime;
-    //         }
-    //     }
     },
     methods:{
     // handleSelect(item) {
     //     console.log(item);
     //   },+
     modifyStartTime(event){
-        var startT = this.vmodels.checkbox.start_time? this.startTimeStr + this.vmodels.dateSelections.start_time : '';
+        var startT = ''
+        if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time)
+            startT = `${this.startTimeStr} ${this.vmodels.dateSelections.start_time} ${this.timezone[this.filters.buttons.market]}`
         this.$store.commit('changeStartTime', startT)  
-        console.log(startT)
+        // console.log(startT)
     },
     modifyEndTime(event){
-        var endT = this.vmodels.checkbox.end_time? this.endTimeStr + this.vmodels.dateSelections.end_time : '';
+        var endT = ''
+        if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time)
+            endT = `${this.endTimeStr} ${this.vmodels.dateSelections.end_time} ${this.timezone[this.filters.buttons.market]}`
+
         this.$store.commit('changeEndTime', endT)  
-        console.log(endT)
+        // console.log(endT)
     },
     queryService(queryString, callback){
-            var results = queryString ? this.services.filter(service=>{
-                var regex = new RegExp(queryString, 'i');
-                return regex.test(service)
-            }) : this.services;
+        var results = queryString ? this.services.filter(service=>{
+            var regex = new RegExp(queryString, 'i');
+            return regex.test(service)
+        }) : this.services;
 
-            var formattedResults = results.map((s) => {
-                return {value:s}
-            })
-            callback(formattedResults)
+        var formattedResults = results.map((s) => {
+            return {value:s}
+        })
+        callback(formattedResults)
       },
       
-      queryServiceLocation(queryString, callback){
+    queryServiceLocation(queryString, callback){
         var results = queryString ? this.serviceLocations.filter(servLocation=>{
             var regex = new RegExp(queryString, 'i');
             return regex.test(servLocation)
@@ -291,9 +313,29 @@ export default {
         else if(event.target.name==='next')
             this.index = (this.index==this.filteredTicketsLength-1)? 0 : this.index + 1;
         // console.log(this.index)
+        
+        if(this.filteredTicketsLength)
+            this.updateIndex(this.index, this.filteredTickets[this.index], this.filteredTickets[this.index].comm_id)
       },
       printTickets(){
           console.log(this.activeTickets)
+      },
+      updateIndex(index, active, commId){
+          this.index = index;
+          this.activeTicket = active;
+          this.lastCommId = commId;
+      },
+
+      // https://element.eleme.io/#/en-US/component/date-picker#date-formats
+      timeNow(event){
+        var element = event.target
+        if(!element.name)
+        element = element.parentElement
+
+        // document.getElementById('dateinput-'+element).value = Date()
+          console.log(element.name)
+        //   console.dir(document.getElementById('dateinput-start_time'))
+        //   vmodels.dateSelections[dateInput.key] = '10-10-2019 12:00 AM'
       }
 
     }

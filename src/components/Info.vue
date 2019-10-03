@@ -14,7 +14,7 @@ export default {
     },
     computed:{
         ticket(){
-            return this.$store.getters.activeTicket
+            return this.$store.state.activeTicket
         },
         propertyToShow(){
             // each array element represent a column in the grid:

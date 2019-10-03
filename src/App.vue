@@ -25,7 +25,7 @@
 <style scoped>
 
 .el-header {
-    background-color: black;
+    background-color: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%);
     color: white;
     text-align: center;
     line-height: 100px;
