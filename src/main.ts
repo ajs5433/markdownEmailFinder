@@ -5,9 +5,10 @@ import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import locale from 'element-ui/lib/locale/lang/en'
 import App from "./App.vue";
-// import pmd from 'perfect-markdown'
+import VueShowdown from 'vue-showdown'
 
-// Vue.use( pmd, {store})
+Vue.use(VueShowdown, {})
+// Vue.component('VueShowdown',VueShowdown)
 
 Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI);
