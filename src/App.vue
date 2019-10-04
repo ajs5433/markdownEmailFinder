@@ -11,7 +11,20 @@
             Notifications
             </router-link>
 
+            <router-link to="/templates">
+            Templates
+            </router-link>
+
           </el-header>
+          <div id="search-bar" >
+            <!-- <el-row id="search-bar"> -->
+            <el-input v-model="keyword" placeholder="Keyword"></el-input>
+            <!-- <el-button icon="el-icon-refresh-left" size="small"> </el-button> -->
+            <!-- <el-badge :value="filteredTicketsLength" class="item"> -->
+            <!-- <el-button size="small">results</el-button> -->
+            <!-- </el-badge> -->
+            <!-- </el-row> -->
+          </div>
         <el-main>
           <router-view />
         </el-main>
@@ -21,6 +34,21 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  computed:{
+        keyword:{
+            get(){
+                return this.$store.state.keyword;
+            },
+            set(keyword){
+                this.$store.commit('setKeyword',keyword)
+            }
+        }
+    }
+}
+</script>
 
 <style scoped>
 

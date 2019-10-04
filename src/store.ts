@@ -1,12 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { TicketFields } from '@/company/InternalData'
+import { TicketFields, incidents, maintenances } from '@/company/InternalData'
 import { Ticket } from '@/company/Tickets'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    editedNotificationTitle: '',
+    editedNotificationText: '',
     activeTicket: [],
     lastCommId: 0,
     keyword: '',
@@ -16,6 +18,10 @@ export default new Vuex.Store({
     index: 0,
     startTime: '',
     endTime: '',
+    templates:{
+      incidents:incidents,
+      maintenances:maintenances
+    }
   },
   getters:{
     activeTickets(state){
@@ -33,7 +39,7 @@ export default new Vuex.Store({
     //   var ticket:Ticket = getter.activeTickets[state.index]
     //   return ticket
     // },
-    notificationText(state, getter){
+    notificationText(state){
       var startTime = state.startTime 
       var endTime = state.endTime 
 
@@ -43,6 +49,7 @@ export default new Vuex.Store({
 
       if(state.activeTicket)
         currentText = state.activeTicket.email_content || ' '
+        // currentText = state.editedNotificationText || (state.activeTicket.email_content || ' ')
 
       if (endTimeRegex.test(currentText) && startTimeRegex.test(currentText))
         currentText = currentText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
@@ -53,7 +60,17 @@ export default new Vuex.Store({
       else
         currentText = currentText + '\n\n' + startTime + '\n\n'+ endTime 
 
+      // return state.editedNotificationText || currentText;
       return currentText;
+    },
+    notificationTitle(state){
+      var currentText = ''
+
+      if(state.activeTicket)
+        currentText = state.activeTicket.email_subject || ' '
+
+      return currentText
+      // return state.editedNotificationTitle || currentText;
     }
   },
   mutations: {
@@ -63,9 +80,9 @@ export default new Vuex.Store({
     // setIndex(state, index){
     //   state.index = index;
     // },
-    setFilteredTickets(state, tickets){
-      state.filteredTickets = tickets;
-    },
+    // setFilteredTickets(state, tickets){
+    //   state.filteredTickets = tickets;
+    // },
     setKeyword(state, keyword){
       state.keyword = keyword;
     },
@@ -78,12 +95,19 @@ export default new Vuex.Store({
     setCommId(state, id){
       state.lastCommId = id
     },
-    modifyNotificationText(state, modification){
-      // console.log('requesting to save:')
-      // console.log(modification)
+    setNotificationText(state, value){
+      state.editedNotificationText = value
+    },
+    setNotificationTitle(state, value){
+      state.editedNotificationTitle = value
     },
     setActiveTicket(state,ticket){
-      console.log(ticket)
+      // new active ticket implies that notification text and title have changed
+      // previous edits in both need to be set to zero Caleb
+      state.editedNotificationText = ''
+      state.editedNotificationTitle = ''
+
+      // console.log(ticket)
       state.activeTicket = ticket
     }
   },

@@ -3,6 +3,8 @@
         <div class="notification-section">
             <div id="options">
 
+                <el-button @click="startOver()" type='warning'>Start Over</el-button>
+                
                 <div id="filter">
 
                     <!-- Prev Next -->
@@ -68,7 +70,7 @@
                     </div>
                 </div>
                 
-                <el-button @click="notificationMessage()" type='success'>Create new notification</el-button>
+                <el-button @click="notificationMessage()" type='success'>Proceed to Stormcrow</el-button>
 
             </div>
         </div>
@@ -116,8 +118,7 @@ export default {
                     market: ''
                 }
             }, 
-            ticketInfo: this.$store.state.ticketInfo,
-            state1 : ''
+            ticketInfo: this.$store.state.ticketInfo
         }
     },
     computed:{
@@ -235,7 +236,7 @@ export default {
         },
         serviceLocations(){ 
             return this.ticketInfo.sn_service_location.options.map(opt=>opt.name)
-        },
+        }
     },
     methods:{
     // handleSelect(item) {
@@ -289,6 +290,35 @@ export default {
           type: 'error'
         });
       },
+      startOver(){
+            console.log(this.$store.state.templates)
+            
+            this.index = 0;
+            this.lastCommId = 0;
+            this.timezone = 0;
+
+            // vmodels contain all data where the user can manually edit info
+            for (var types in this.vmodels){
+                for (var property in types){
+                    if (typeof this.vmodels[types][property]=='boolean')
+                        this.vmodels[types][property] = false
+                    else
+                        this.vmodels[types][property] = ''
+                }
+            }
+
+            // filters are selection of fields, filterType is only a set of buttons that work as radiobuttons
+            for (var selectionType in this.filters){
+                for (var property in selectionType){
+                    this.filters[selectionType][property] = ''
+                }
+            }
+
+            this.$store.commit('setKeyword', '')
+            // this.$recompute('filteredTickets')
+
+            // this.$store.commit('setActiveTicket', ticket)
+        },
       filterButtonClicked(event){
         var element = event.target
         if(!element.name)

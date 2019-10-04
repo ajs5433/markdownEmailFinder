@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/papaparse": "^5.0.1",
+    "@types/showdown": "^1.9.3",
     "core-js": "^2.6.5",
     "element-ui": "^2.12.0",
     "papaparse": "^5.1.0",

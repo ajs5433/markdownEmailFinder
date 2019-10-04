@@ -1,17 +1,9 @@
 <template>
     <div class="notifications">
-        <div id="search-bar" >
-        <!-- <el-row id="search-bar"> -->
-            <el-input v-model="keyword" placeholder="Keyword"></el-input>
-            <el-button icon="el-icon-refresh-left" size="small"> </el-button>
-            <!-- <el-badge :value="filteredTicketsLength" class="item"> -->
-            <!-- <el-button size="small">results</el-button> -->
-            <!-- </el-badge> -->
-        <!-- </el-row> -->
-        </div>
+
 
         <div id="notif-area">
-            <!-- <Info/> -->
+            <Info/>
             <Display/>
             <Selector/>
         </div>
@@ -33,16 +25,6 @@ export default Vue.extend({
 
         }
     },
-    computed:{
-        keyword:{
-            get(){
-                return this.$store.state.keyword;
-            },
-            set(keyword){
-                this.$store.commit('setKeyword',keyword)
-            }
-        }
-    }
 })
 </script>
 
