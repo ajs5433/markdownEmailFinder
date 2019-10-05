@@ -5,7 +5,7 @@
         
         <el-input class="edit body" v-show="edit" :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="23" :cols="50">     </el-input>
         <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/>
-        <el-button @click="edit = !edit"> Edit </el-button>
+        <el-button @click="edit = !edit" size="mini"> Edit </el-button>
 
     </div>
 </template>

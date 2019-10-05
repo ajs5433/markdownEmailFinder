@@ -20,6 +20,12 @@
               TEMPLATES
               </router-link>
             </div>
+
+            <div id="import-icon">
+                <router-link to="/about">
+                  <el-button id="icon-info" icon="el-icon-info" ></el-button>
+                </router-link>
+            </div>
             
           </el-header>
           <div id="search-bar" >
@@ -134,6 +140,20 @@ body{
   color: #2c3e50;
   background-color: white;
   /* border: 2px solid white; */
+}
+
+#icon-info{
+  color: transparent;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 23px;
+  padding: 9px 15px;
+}
+
+#icon-info:hover{
+  color: white;
+  background-color: #2c3e50;
+  border: 2px solid white;
 }
 
 #search-bar{
