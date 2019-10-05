@@ -1,7 +1,14 @@
 <template>
     <div id="ticket-info">
             <div v-for="(ticketProperty,index ) in propertyToShow" :key="'1-'+index" class="heading" :style="'grid-row:' + (index+1) + ' / span 1; gird-col: 1 / span 1'"> {{ticketProperty.label}}</div>
-            <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'">  {{ticketProperty.value}}</div>
+            <!-- <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'">  {{ticketProperty.value}} </div> -->
+            
+            <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'"> 
+                <el-tooltip v-if="ticketProperty.value.length > 34" class="item" effect="light" :content="ticketProperty.value" placement="top" size="small">
+                    <div> {{ticketProperty.value}} </div>
+                </el-tooltip>
+                <div v-else>{{ticketProperty.value}} </div>
+            </div>
     </div>
 </template>
 
@@ -36,11 +43,12 @@ export default {
                 }
                 
                 if(property === this.ticketInfo.stormcrow_services){
-                    var splitChar = ' | ,'
-                    var splitChar = ' ,'
-                    var rows = 5
+                    var splitChar = ' | '
+                    // var splitChar = ' ,'
+                    var rows = 3
 
-                    var services = this.ticket[property.name]?this.ticket[property.name].split(splitChar): [' - ','','','','']
+                    var services = this.ticket[property.name]?this.ticket[property.name].split(splitChar+','): [' - ','','','','']
+                    services[services.length-1] = services[services.length-1].slice(0,services[services.length-1].length - splitChar.length)
 
                     // Keeping the stormcrow_services to a constant number or rows, wether it has n services or not
                     if(services.length!=rows)
@@ -68,18 +76,39 @@ export default {
 
 #ticket-info{
     font-size: 12px;
-    padding: 20px;
-    border: 1px solid red;
+
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 11px;
+
+    padding: 20px 16px;
+    border: 1px solid gray;
+    background-color: rgb(250,250,250);
 
     display: grid;
-    grid-template-rows: repeat(15, 23px);
+
+    grid-template-rows: repeat(15, 20px);
     grid-template-columns: 150px 150px;
-    grid-template-columns: 180px 250px;
+    grid-template-columns: 118px 180px;
     justify-items: start;
+}
+
+#ticket-info>*{
+    overflow: hidden;
+    text-align: left;
+    line-height: 90%;
+    height: 100%;
+    width: 100%;
+    align-self: center;
 }
 
 .heading{
     font-weight: 700;
+}
+
+@media (max-width:1100px){
+    #ticket-info{
+        display:none;
+    }
 }
 
 </style>

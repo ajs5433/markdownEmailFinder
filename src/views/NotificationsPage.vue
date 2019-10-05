@@ -37,4 +37,12 @@ export default Vue.extend({
     display:flex;
     justify-content: center;
 }
+
+#notif-area>*{
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid gray;
+
+    height: 600px;
+}
 </style>

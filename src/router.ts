@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
-import ImportPage from "./views/ImportPage.vue";
-import TemplatesPage from "./views/TemplatesPage.vue";
+// import ImportPage from "./views/ImportPage.vue";
+// import TemplatesPage from "./views/TemplatesPage.vue";
 import NotificationsPage from "./views/NotificationsPage.vue";
 
 Vue.use(Router);
@@ -17,12 +17,14 @@ export default new Router({
     {
       path: "/import",
       name: "import",
-      component: ImportPage
+      // component: ImportPage
+      component: () => import("./views/ImportPage.vue")
     },
     {
       path: "/templates",
       name: "templates",
-      component: TemplatesPage
+      // component: TemplatesPage
+      component: () => import("./views/TemplatesPage.vue")
     },
     {
       path: "/about",

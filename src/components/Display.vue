@@ -1,9 +1,12 @@
 <template>
     <div id="template">
-        <!-- <textarea type="textarea" id="text" v-model="test" rows="20" cols="30">     </textarea> -->
-        <el-input :spellcheck="true" id="title" type="text" v-model="notificationTitle" :rows="1" :cols="10">   </el-input>
-        <el-input :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="20" :cols="50">     </el-input>
-        <VueShowdown style="text-align:left" :markdown="notificationText"/>
+        <el-input class="edit title" v-show="edit" :spellcheck="true" id="title-edit" type="text" v-model="notificationTitle" :rows="1" :cols="10">   </el-input>
+        <el-input class="display title" v-show="!edit" :spellcheck="true" id="title-display" type="text" v-model="notificationTitle" :rows="1" :cols="10" :readonly="true">   </el-input>
+        
+        <el-input class="edit body" v-show="edit" :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="23" :cols="50">     </el-input>
+        <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/>
+        <el-button @click="edit = !edit"> Edit </el-button>
+
     </div>
 </template>
 
@@ -12,6 +15,7 @@ export default {
     data(){
         return{
             notif: '',
+            edit : false
         }
     },
     computed:{
@@ -48,8 +52,18 @@ export default {
     width: 450px;
 }
 
-#title{
-    font-weight: 900;
-    font-size: 13px;
+#body-display{
+    padding: 4px 10px;
 }
+
+.body{
+    height: 500px;
+    font-size: 14px;
+}
+
+.title{
+    font-size: 13px;
+    font-weight:800;
+}
+
 </style>

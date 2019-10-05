@@ -374,9 +374,9 @@ export default {
 
 <style scoped>
 
+/* *{box-sizing:border-box} */
 
-
-.notification-section{
+#notification-section{
     display:flex;
     justify-content: center;
     align-items: stretch;
@@ -412,9 +412,10 @@ export default {
     border: 1px solid green;
 }
 
+/* remove comment */
 #options{
     flex: 0 0 420px;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;

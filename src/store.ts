@@ -19,8 +19,8 @@ export default new Vuex.Store({
     startTime: '',
     endTime: '',
     templates:{
-      incidents:incidents,
-      maintenances:maintenances
+      incidents,
+      maintenances
     }
   },
   getters:{
