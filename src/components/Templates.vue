@@ -1,5 +1,5 @@
 <template>
-    <div id="main">
+    <div id="main-template">
         <div class="template" v-for="incident in incidents" :key="'inc-'+incident.title">
             <div class="title incident">{{incident.title}}</div>
             <div class="body" > 
@@ -10,7 +10,7 @@
         </div>
 
         <div class="template" v-for="maintenance in maintenances" :key="'maint-'+maintenance.title">
-            <div class="title maintenance">{{maintenance.title}}</div>
+            <div :class="'title '+ maintenance.type">{{maintenance.title}}</div>
             <div class="body">
                 <pre>
                     {{maintenance.body}}
@@ -40,7 +40,8 @@ export default {
                         continue
                     
                     var regex = new RegExp(keyword, 'i')    
-                    if(!regex.test(inc.body) && !regex.test(inc.title)){
+                    if(!regex.test(inc.title)){
+                    // if(!regex.test(inc.body) && !regex.test(inc.title)){
                         passed = false;
                         break
                     }
@@ -52,19 +53,41 @@ export default {
         },
 
         maintenances(){
-            var regex = new RegExp(this.keyword,'i')
+            var keywordList = this.keyword.split(' ')
+
             var maintenances = this.$store.state.templates.maintenances.filter(maint =>{
-                return regex.test(maint.title) || regex.test(maint.body)
+                var passed = true;
+                for (var keyword of keywordList){
+                    if (!keyword)
+                        continue
+                    
+                    var regex = new RegExp(keyword, 'i')    
+                    if(!regex.test(maint.title)){
+                    // if(!regex.test(maint.body) && !regex.test(maint.title)){
+                        passed = false;
+                        break
+                    }
+                }
+                return passed;
             })
+
             return maintenances
-        }
+        },
+
+        // maintenances(){
+        //     var regex = new RegExp(this.keyword,'i')
+        //     var maintenances = this.$store.state.templates.maintenances.filter(maint =>{
+        //         return regex.test(maint.title) || regex.test(maint.body)
+        //     })
+        //     return maintenances
+        // }
     },
     methods:{}
 }
 </script>
 
 <style scoped>
-#main{
+#main-template{
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -72,18 +95,30 @@ export default {
 }
 
 .template{
-    border: 1px gray solid;
+    border: 1px solid lightgray;
     border-radius: 5px;
     margin: 7px;
-    max-width: 800px;
+    width: 50%;
+    text-align: center;
+    /* min-width: 500px; */
+    /* width: 800px; */
+    /* min-width: 50% */
+}
+
+.template:hover{
+    border: 1px solid gray
 }
 
 .incident{
     color: red;
 }
 
-.maintenance{
+.planned{
     color: green;
+}
+
+.emergency{
+    color: orange;
 }
 
 .body{
@@ -97,6 +132,24 @@ pre{
     white-space: -pre-wrap;      /* Opera 4-6 */
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */    
+}
+
+@media (max-width:1100px){
+    .template{
+        width: 80%;
+    }
+}
+
+@media (max-width:700px){
+    .template{
+        font-size:12px;
+    }
+}
+
+@media (max-width:500px){
+    .template{
+      width: 90%;
+    }
 }
 
 </style>

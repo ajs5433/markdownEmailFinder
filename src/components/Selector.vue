@@ -3,44 +3,31 @@
         <div class="notification-section">
             <div id="options">
 
-                <el-button @click="startOver()" type='warning'>Start Over</el-button>
+                <div class="button-area">
+                    <!-- <el-button id="start-btn" class="main-btn" @click="startOver()" type='warning'>Start Over <i class="el-icon-refresh-right main-btn-icon"></i> </el-button> -->
+                    <el-button icon="el-icon-refresh-right" id="start-btn" class="main-btn" @click="startOver()" type='warning'>Start Over </el-button>
+                </div>
                 
-                <div id="filter">
-
-                    <!-- Prev Next -->
-                    <div class="flex-row" id="results">
-                        <el-button @click="printTickets" > {{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </el-button>
-                        <el-button @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
-                        <el-button @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
-                    </div>
-
-                    <!-- Additional Filters: Input fields -->
-                    <div v-for="input in filteringOptions.inputFields" :key="input.key" class="grid-row">
-                        <span> {{input.label}} </span>
-                        <!-- <el-input v-model="vmodels.inputFields[input.key]"></el-input> -->
-                        <el-autocomplete
-                            label="coco"
-                            class="inline-input"
-                            v-model="vmodels.inputFields[input.key]"
-                            :fetch-suggestions="input.query"
-                            placeholder="Please Input"
-                            :highlight-first-item="true"
-                        clearable></el-autocomplete>
-                    </div>
-                    
-
+                
+                <!-- <el-button id="count" @click="printTickets" > {{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </el-button> -->
+                <div id="count"><span>{{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </span></div>
+                <div class="flex-row" id="results">
+                    <el-button class="nav-btn" @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
+                    <el-button class="nav-btn" @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
                 </div>
 
                 <!-- Area of Buttons -->
-                <div class="flex-row" v-for="selectButton of filteringOptions.buttons" :id="selectButton.key" :key="selectButton.key">
-                    <el-button :name="selectButton.key" :data-string="option.name" @click="filterButtonClicked" size="small" :class="{'row-btn':true, 'active-btn':filters.buttons[selectButton.key]==option.name}" v-for="option of selectButton.options" :key="option.name"> {{ option.name }}</el-button>
+                <div id="filter-div">
+                    <div class="flex-row" v-for="selectButton of filteringOptions.buttons" :id="selectButton.key" :key="selectButton.key">
+                        <el-button class="filter-btn" :name="selectButton.key" :data-string="option.name" @click="filterButtonClicked" size="small" :class="{'row-btn':true, 'active-btn':filters.buttons[selectButton.key]==option.name}" v-for="option of selectButton.options" :key="option.name"> {{ option.name }}</el-button>
+                    </div>
                 </div>
-                
+
                 <!-- Select time -->
-                <div class="grid-row" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
+                <div class="grid-row-container" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
                     <div>
-                        <el-checkbox @change="dateInput.method" v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
-                        <span> {{ dateInput.label }}</span>
+                        <span class="label"> {{ dateInput.label }}</span>
+                        <el-checkbox class="time-checkbox" @change="dateInput.method" v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
                     </div>
                     <div>
                         <el-date-picker
@@ -56,22 +43,31 @@
                             :value-format="datetimeFormat[filters.buttons.market]"
                             placeholder="Select date and time">
                         </el-date-picker>
-                        <el-button :name="dateInput.key" @click="timeNow" icon="el-icon-time"></el-button>
+                        <!-- <el-button :name="dateInput.key" @click="timeNow" icon="el-icon-time"></el-button> -->
                     </div>
                 </div>
 
-                <!-- Ticket -->
-                <div class="grid-row">
-                    <div>
-                        <span>Ticket No.</span>
-                    </div>
-                    <div>
-                        <el-input placeholder="INC0000000"> </el-input>
-                    </div>
+                <!-- Additional Filters: Input fields -->
+                <div v-for="input in filteringOptions.inputFields" :key="input.key" class="grid-row-container">
+                    <span class="label"> {{input.label}} </span>
+                    <!-- <el-input v-model="vmodels.inputFields[input.key]"></el-input> -->
+                    <el-autocomplete
+                        label="coco"
+                        class="inline-input"
+                        v-model="vmodels.inputFields[input.key]"
+                        :fetch-suggestions="input.query"
+                        placeholder="Please Input"
+                        :highlight-first-item="true"
+                    clearable></el-autocomplete>
                 </div>
-                
-                <el-button @click="notificationMessage()" type='success'>Proceed to Stormcrow</el-button>
+                    
 
+                </div>
+
+                <div class="button-area">
+                    <!-- <el-button id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow <i class="el-icon-top-right"></i></el-button> -->
+                    <el-button icon="el-icon-top-right" id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow </el-button>
+                </div>
             </div>
         </div>
             
@@ -286,7 +282,10 @@ export default {
       notificationMessage(){
           this.$message({
         //   title: 'Error',
-          message: 'This is an info message adpiha dphpiuhfpis hfpiahs fipahs oigf[hadsfp[ hsfhpa f[ahs f]asj oi[hsgoi[hagfhas]oihgfas[odhf a[oshf [aosdha[os dhf]as g[a oiug[has haoiu[gh aoi[jgfaois[ jfo[ais jf',
+          showClose: true,
+          duration: 5000,
+          offset: 180,
+          message: 'message',
           type: 'error'
         });
       },
@@ -335,12 +334,17 @@ export default {
 
       // check this, numbers repeat sometimes
       changeIndex(event){
-        //   console.log(this.index)
         if (this.filteredTicketsLength==0)
             return
-        if(event.target.name === 'prev')
+
+        var element = event.target
+
+        if(!element.name) 
+            element =  element.parentElement
+
+        if(element.name === 'prev')
             this.index = (this.index==0)? this.filteredTicketsLength-1 : this.index - 1;
-        else if(event.target.name==='next')
+        else if(element.name==='next')
             this.index = (this.index==this.filteredTicketsLength-1)? 0 : this.index + 1;
         // console.log(this.index)
         
@@ -374,55 +378,115 @@ export default {
 
 <style scoped>
 
-/* *{box-sizing:border-box} */
+/* -------------------------------- */
 
-#notification-section{
-    display:flex;
-    justify-content: center;
-    align-items: stretch;
-    /* flex-wrap:wrap; */
+.main-btn{
+    box-sizing:border-box;
+    width: 100%;
+    font-size: 800;
+    background-color: white;
+    /* font-family: 'Libre Franklin', sans-serif; */
+}
+
+.button-area{
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border: 1px solid lightgray;
+}
+
+.grid-row-container{
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 30% 70%;
+}
+
+#start-btn{
+    color: rgba(234,75,60,1);
+    color: #E4324C;
+    border-color:#E4324C
+}
+
+#start-btn:hover{
+    color: white;
+    border-color:  red;
+    background-color: #E4324C;
+}
+
+#submit-btn{
+    color: #3b4483;
+    border-color: #3b4483;
+}
+
+#submit-btn:hover{
+    border-color: blue;
+    color: white;
+    background-color:  #3b4483;
+}
+
+#count{
+    /* border: 1px solid red; */
+    width: 100%;
+    margin: 0;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 15px;
+    background-color:rgb(250,250,250);
+    /* text-justify: center; */
 }
 
 .flex-row{
     display:flex;
 }
 
-.grid-row{
-    display: grid;
-    grid-template-rows: 100%;
-    grid-template-columns: 30% 70%;
+.el-button{
+    margin: 0 !important;
+
+    background-color: white;
+    border-color: lightgray;
 }
 
-.row-btn{
-    flex: 1 1 auto;
-    /* max-width: 50px; */
-    overflow: hidden;
+.el-button:hover{
+    color:lightgray;
+    background-color: #2c3e50;
 }
 
-.notification-section>*{
-    min-width: 200px;
-    min-height: 200px;
+.el-button:focus{
+    background-color: white;
+    border-color: lightgray;
+    color: black;
 }
 
-#ticket-info{
-    border: 1px solid red;
+.filter-btn:focus{
+    color:white;
+    background-color: #2c3e50;
+    color:lightgray;
 }
 
-#template{
-    border: 1px solid green;
+.flex-row>*{
+    width: 100%;
+    flex: 50% 1 1;
+    font-size: 20px;
+    margin: 0;
+
+    padding: 10px 5px;
+    font-size: 13px;
 }
 
-/* remove comment */
-#options{
-    flex: 0 0 420px;
-    /* border: 1px solid blue; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-content: center;
+.nav-btn{
+    padding: 4;
+}
+
+#filter-div{
+    padding: 10px;
+    background-color: rgb(250,250,250);
 }
 
 .active-btn{
-    color: red !important;
+    color:white;
+    background-color: #2c3e50;
 }
+
 </style>

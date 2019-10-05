@@ -1,4 +1,6 @@
 <template>
+<div>
+    <div id="empty-space"></div>
     <div id="ticket-info">
             <div v-for="(ticketProperty,index ) in propertyToShow" :key="'1-'+index" class="heading" :style="'grid-row:' + (index+1) + ' / span 1; gird-col: 1 / span 1'"> {{ticketProperty.label}}</div>
             <!-- <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'">  {{ticketProperty.value}} </div> -->
@@ -10,6 +12,7 @@
                 <div v-else>{{ticketProperty.value}} </div>
             </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -95,7 +98,7 @@ export default {
 #ticket-info>*{
     overflow: hidden;
     text-align: left;
-    line-height: 90%;
+    line-height: 100%;
     height: 100%;
     width: 100%;
     align-self: center;
@@ -103,6 +106,11 @@ export default {
 
 .heading{
     font-weight: 700;
+}
+
+#empty-space{
+    height: 60px;
+    background:red;
 }
 
 @media (max-width:1100px){

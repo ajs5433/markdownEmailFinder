@@ -2,6 +2,9 @@
   <div id="app">
     <!-- <div id="nav"> -->
       <!-- <el-container> -->
+        <div id="top">
+
+        
           <el-header id="header">
             <div id="import-icon">
               <!-- <el-tooltip class="item" effect="dark" content="Import more notifications" placement="bottom-end"> -->
@@ -37,7 +40,8 @@
             <!-- </el-badge> -->
             <!-- </el-row> -->
           </div>
-        <el-main>
+        </div>
+        <el-main id="main">
           <router-view />
         </el-main>
       <!-- </el-container>  -->
@@ -77,7 +81,7 @@ body{
 }
 
 #header{
-    background-color: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%);
+    background: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%);
     color: white;
     text-align: center;
     height: 80px;
@@ -85,8 +89,11 @@ body{
     align-items: center;
     font-size:20px;
     background-color: #243238;
+    border-bottom: 2px solid lightgray;
 }
 
+
+ /* change back */
 #app {
   /* font-family: "Avenir", Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
@@ -108,6 +115,7 @@ body{
   align-items: flex-end;
   align-self: flex-end;
   padding: 8px;
+
 }
 
 #nav-bar>*{
@@ -159,7 +167,25 @@ body{
 #search-bar{
   padding: 0 20%;
   margin: 35px;
+  /* margin-top: 135px; */
   /* margin-bottom: 40px; */
+  z-index: 10;
+}
+
+#top{
+    top:0;
+    position:fixed;
+    width:100%;  
+    /* background-color: white; */
+    /* background-color: rgb(256,256,256,0.92) */
+    background:linear-gradient(red 75%, yellow );
+    background:linear-gradient(rgb(256,256,256,1) 75%, rgb(256,256,256,0.9));
+    z-index: 10000;
+}
+
+#main{
+  margin-top:150px;
+  /* background-color: red; */
 }
 
 </style>
