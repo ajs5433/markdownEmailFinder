@@ -1,23 +1,28 @@
 <template>
-    <div id="main-template">
-        <div class="template" v-for="incident in incidents" :key="'inc-'+incident.title">
-            <div class="title incident">{{incident.title}}</div>
-            <div class="body" > 
-                <pre>
-                {{incident.body}}
-                </pre>
+    <!-- <div id="templates-page"> -->
+        
+        <div id="main-template">
+            <div class="template" v-for="incident in incidents" :key="'inc-'+incident.title">
+                <div class="title incident">{{incident.title}}</div>
+                <div class="body" > 
+                    <pre>
+                    {{incident.body}}
+                    </pre>
+                </div>
             </div>
-        </div>
 
-        <div class="template" v-for="maintenance in maintenances" :key="'maint-'+maintenance.title">
-            <div :class="'title '+ maintenance.type">{{maintenance.title}}</div>
-            <div class="body">
-                <pre>
-                    {{maintenance.body}}
-                </pre>
+            <div class="template" v-for="maintenance in maintenances" :key="'maint-'+maintenance.title">
+                <div :class="'title '+ maintenance.type">{{maintenance.title}}</div>
+                <div class="body">
+                    <pre>
+                        {{maintenance.body}}
+                    </pre>
+                </div>
             </div>
-        </div>
-    </div>    
+        </div>    
+
+        <!-- <div id="links">        </div> -->
+    <!-- </div> -->
 </template>
 
 <script>
@@ -87,11 +92,21 @@ export default {
 </script>
 
 <style scoped>
+#templates-page{
+    display: flex;
+}
+
+#links{
+    display: none;
+    background-color: lightblue;
+    width: 30%;
+    border-left: 1px solid gray;
+}
+
 #main-template{
     display: flex;
     align-items: center;
     flex-direction: column;
- 
 }
 
 .template{
@@ -133,6 +148,7 @@ pre{
     white-space: -o-pre-wrap;    /* Opera 7 */
     word-wrap: break-word;       /* Internet Explorer 5.5+ */    
 }
+
 
 @media (max-width:1100px){
     .template{

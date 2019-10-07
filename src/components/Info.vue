@@ -1,13 +1,15 @@
 <template>
-<div>
-    <div id="empty-space"></div>
+<div id="info-section">
+    <div id="empty-space">
+        <span id="empty-space-text">Additional Information:</span>
+    </div>
     <div id="ticket-info">
             <div v-for="(ticketProperty,index ) in propertyToShow" :key="'1-'+index" class="heading" :style="'grid-row:' + (index+1) + ' / span 1; gird-col: 1 / span 1'"> {{ticketProperty.label}}</div>
             <!-- <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'">  {{ticketProperty.value}} </div> -->
             
             <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'"> 
-                <el-tooltip v-if="ticketProperty.value.length > 34" class="item" effect="light" :content="ticketProperty.value" placement="top" size="small">
-                    <div> {{ticketProperty.value}} </div>
+                <el-tooltip v-if="ticketProperty.value.length > 30" class="item" effect="light" :content="ticketProperty.value" placement="top" size="small">
+                    <div> {{ticketProperty.value.slice(0,24)+'...'}} </div>
                 </el-tooltip>
                 <div v-else>{{ticketProperty.value}} </div>
             </div>
@@ -77,6 +79,10 @@ export default {
 
 <style scoped>
 
+#info-section{
+    background: rgb(250,250,250)
+}
+
 #ticket-info{
     font-size: 12px;
 
@@ -84,8 +90,10 @@ export default {
     font-size: 11px;
 
     padding: 20px 16px;
-    border: 1px solid gray;
+    /* border: 1px solid gray; */
     background-color: rgb(250,250,250);
+    background-color: transparent;
+    /* background-color: lightskyblue; */
 
     display: grid;
 
@@ -109,12 +117,20 @@ export default {
 }
 
 #empty-space{
-    height: 60px;
-    background:red;
+    margin-top: 10px;
+    height: 45px;
+    background:white;
+    border-bottom: 1px solid lightgray;
+}
+
+#empty-space-text{
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 14px;
+    padding-top: 10px;
 }
 
 @media (max-width:1100px){
-    #ticket-info{
+    #info-section{
         display:none;
     }
 }

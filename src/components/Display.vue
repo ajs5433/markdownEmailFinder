@@ -5,7 +5,9 @@
         
         <el-input class="edit body" v-show="edit" :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="23" :cols="50">     </el-input>
         <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/>
-        <el-button @click="edit = !edit" size="mini"> Edit </el-button>
+        
+        <el-button icon="el-icon-edit" class="edit-save-btns" id="edit-btn" v-if="!edit" @click="edit = !edit" size="mini"> EDIT </el-button>
+        <el-button icon="el-icon-check" class="edit-save-btns" id="save-btn" v-if="edit" @click="edit = !edit" size="mini"> SAVE </el-button>
 
     </div>
 </template>
@@ -64,6 +66,30 @@ export default {
 .title{
     font-size: 13px;
     font-weight:800;
+}
+
+#title-display, #title-edit, .title{
+    height: 55px !important;
+    line-height: 55px;
+    margin: 0;
+}
+
+.edit-save-btns, .edit-save-btns:focus{
+    color: lightblue;
+    background-color: white;
+    border: 1px solid lightblue;
+}
+
+#edit-btn:hover{
+    border: 1px solid orange;
+    color: orange;
+    background-color: white;
+}
+
+#save-btn{
+    border: 1px solid green;
+    color: green;
+    background-color: white;
 }
 
 </style>

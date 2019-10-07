@@ -23,29 +23,6 @@
                     </div>
                 </div>
 
-                <!-- Select time -->
-                <div class="grid-row-container" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
-                    <div>
-                        <span class="label"> {{ dateInput.label }}</span>
-                        <el-checkbox class="time-checkbox" @change="dateInput.method" v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
-                    </div>
-                    <div>
-                        <el-date-picker
-                            :id="'dateinput-' + dateInput.key"
-                            @change="dateInput.method"
-                            v-model="vmodels.dateSelections[dateInput.key]"
-                            type="datetime"
-                            :picker-options="{
-                                step: '00:10'
-                            }"
-                            :disabled="filters.buttons.market===''"
-                            format="yyyy-MM-dd HH:mm:SS"
-                            :value-format="datetimeFormat[filters.buttons.market]"
-                            placeholder="Select date and time">
-                        </el-date-picker>
-                        <!-- <el-button :name="dateInput.key" @click="timeNow" icon="el-icon-time"></el-button> -->
-                    </div>
-                </div>
 
                 <!-- Additional Filters: Input fields -->
                 <div v-for="input in filteringOptions.inputFields" :key="input.key" class="grid-row-container">
@@ -56,11 +33,63 @@
                         class="inline-input"
                         v-model="vmodels.inputFields[input.key]"
                         :fetch-suggestions="input.query"
-                        placeholder="Please Input"
+                        placeholder="Optional field"
                         :highlight-first-item="true"
                     clearable></el-autocomplete>
                 </div>
-                    
+
+                <!-- Select time -->
+                <!-- <div class="grid-row-container" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
+                    <div>
+                        <span class="label"> {{ dateInput.label }}</span>
+                        <el-checkbox class="time-checkbox" @change="dateInput.method" v-model="vmodels.checkbox[dateInput.key]"></el-checkbox>
+                    </div>
+                    <div>
+                        <el-date-picker
+                            class="date-input"
+                            :id="'dateinput-' + dateInput.key"
+                            @change="dateInput.method"
+                            v-model="vmodels.dateSelections[dateInput.key]"
+                            type="datetime"
+                            :picker-options="{
+                                step: '00:10'
+                            }"
+                            :disabled="false && filters.buttons.market===''"
+                            format="yyyy-MM-dd HH:mm:SS"
+                            :value-format="datetimeFormat[filters.buttons.market]"
+                            placeholder="Select date and time">
+                        </el-date-picker>
+                    </div>
+                </div> -->
+
+
+                <div class="grid-row-container" v-for="dateInput of filteringOptions.dateSelections" :key="dateInput.key"> 
+                    <div>
+                        <el-tooltip  class="item" effect="light" content="click to include" placement="left" size="small">
+                            <el-button :name="dateInput.key" :class="{'active-date-btn':vmodels.checkbox[dateInput.key]}" @click="dateInput.method" class="label"> {{ dateInput.label }}</el-button>
+                        </el-tooltip>
+                    </div>
+                    <div>
+                        <el-date-picker
+                            class="date-input"
+                            :id="'dateinput-' + dateInput.key"
+                            @change="dateInput.method"
+                            v-model="vmodels.dateSelections[dateInput.key]"
+                            type="datetime"
+                            :picker-options="{
+                                step: '00:10'
+                            }"
+                            :disabled="false && filters.buttons.market===''"
+                            format="yyyy-MM-dd HH:mm:SS"
+                            :value-format="datetimeFormat[filters.buttons.market]"
+                            placeholder="Select date and time">
+                        </el-date-picker>
+                    </div>
+                </div>
+
+                <!-- </div> -->
+                
+                <div style="width: 100%; height: 20px;background-color: rgb(250,250,250)">
 
                 </div>
 
@@ -98,8 +127,8 @@ export default {
                     sn_service_location: ''
                 },
                 dateSelections:{
-                    start_time: '' ,
-                    end_time: ''
+                    start_time: false ,
+                    end_time: false
                 },
                 checkbox:{
                     start_time: false ,
@@ -238,20 +267,37 @@ export default {
     // handleSelect(item) {
     //     console.log(item);
     //   },+
+    // modifyStartTime(event){
+    //     var startT = ''
+    //     if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time)
+    //         startT = `${this.startTimeStr} ${this.vmodels.dateSelections.start_time} ${this.timezone[this.filters.buttons.market]}`
+    //     this.$store.commit('changeStartTime', startT)  
+    // },
+    // modifyEndTime(event){
+    //     var endT = ''
+    //     if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time)
+    //         endT = `${this.endTimeStr} ${this.vmodels.dateSelections.end_time} ${this.timezone[this.filters.buttons.market]}`
+
+    //     this.$store.commit('changeEndTime', endT)  
+    // },
     modifyStartTime(event){
+        if(event.target)                                                                // date events(changing date/datetime) do not have target
+            this.vmodels.checkbox.start_time = !this.vmodels.checkbox.start_time;
+
         var startT = ''
         if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time)
             startT = `${this.startTimeStr} ${this.vmodels.dateSelections.start_time} ${this.timezone[this.filters.buttons.market]}`
         this.$store.commit('changeStartTime', startT)  
-        // console.log(startT)
     },
     modifyEndTime(event){
+        if(event.target)                                                                // date events(changing date/datetime) do not have target
+            this.vmodels.checkbox.end_time = !this.vmodels.checkbox.end_time;
+
         var endT = ''
         if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time)
             endT = `${this.endTimeStr} ${this.vmodels.dateSelections.end_time} ${this.timezone[this.filters.buttons.market]}`
 
         this.$store.commit('changeEndTime', endT)  
-        // console.log(endT)
     },
     queryService(queryString, callback){
         var results = queryString ? this.services.filter(service=>{
@@ -359,7 +405,10 @@ export default {
           this.activeTicket = active;
           this.lastCommId = commId;
       },
-
+      mouseDown(e){
+          console.log(e)
+          e.preventDefault()
+      },
       // https://element.eleme.io/#/en-US/component/date-picker#date-formats
       timeNow(event){
         var element = event.target
@@ -390,15 +439,18 @@ export default {
 
 .button-area{
     width: 100%;
-    padding: 10px;
+    padding: 8px 10px 8px 10px;
     margin: 0;
     border: 1px solid lightgray;
 }
 
+.button-area:last-child{
+    border-bottom:none;
+}
 .grid-row-container{
     display: grid;
     grid-template-rows: 100%;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 35% 65%;
 }
 
 #start-btn{
@@ -441,28 +493,44 @@ export default {
     display:flex;
 }
 
-.el-button{
+/* Orange/Red Theme */
+.el-button, .el-button:focus{
     margin: 0 !important;
-
     background-color: white;
-    border-color: lightgray;
+    border-color: darkred;
 }
 
 .el-button:hover{
-    color:lightgray;
-    background-color: #2c3e50;
+    color:darkred;
+    background-color: orange;
+    background-color: pink;
 }
 
-.el-button:focus{
-    background-color: white;
-    border-color: lightgray;
-    color: black;
-}
-
-.filter-btn:focus{
+.filter-btn:focus, .active-btn{
     color:white;
-    background-color: #2c3e50;
-    color:lightgray;
+    background-color: darkorange;
+    color:darkred;
+}
+
+
+/* Blue Theme */
+.el-button, .el-button:focus{
+    margin: 0 !important;
+    background-color: white;
+    border-color: white;
+    border:none;
+}
+
+.el-button:hover{
+    color: white;
+    background-color: #1DA1F2, ;
+}
+
+.filter-btn:focus, .active-btn{
+    color:white;
+    background-color: #1DA1F2;
+    background-color: #185ec7;
+    background-color: #186ac7;
 }
 
 .flex-row>*{
@@ -480,13 +548,28 @@ export default {
 }
 
 #filter-div{
-    padding: 10px;
+    padding: 20px 10px;
     background-color: rgb(250,250,250);
 }
 
-.active-btn{
-    color:white;
-    background-color: #2c3e50;
+.label{
+    font-family: 'Libre Franklin', sans-serif;
+    font-size: 13px;
+}
+
+.el-date-editor.el-input{
+    box-sizing:border-box;
+    width: 100%;
+}
+
+.active-date-btn{
+    border: 1px solid #186ac7 !important;
+    width: 90% !important;
+    color: black !important;
+}
+
+button:focus{
+    outline: none;
 }
 
 </style>

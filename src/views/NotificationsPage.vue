@@ -42,7 +42,8 @@ export default Vue.extend({
 #notif-area>*{
     margin: 5px;
     border-radius: 5px;
-    border: 1px solid gray;
+    border: 1px solid #1DA1F2;
+    border: 1px solid orange ;
     height: 600px;
 }
 </style>

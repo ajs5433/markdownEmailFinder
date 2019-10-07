@@ -33,7 +33,7 @@ export default new Vuex.Store({
             if (regex.test(t.sn_short_description)||regex.test(t.sn_description))
                 return true
             return false
-        })
+        }).reverse()
       },
     // activeTicket(state, getter){
     //   var ticket:Ticket = getter.activeTickets[state.index]

@@ -81,7 +81,7 @@ body{
 }
 
 #header{
-    background: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%);
+    /* background: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%); */
     color: white;
     text-align: center;
     height: 80px;
@@ -185,6 +185,7 @@ body{
 
 #main{
   margin-top:150px;
+  padding: 80px;
   /* background-color: red; */
 }
 
