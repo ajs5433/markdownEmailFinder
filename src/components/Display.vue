@@ -66,6 +66,7 @@ export default {
 .title{
     font-size: 13px;
     font-weight:800;
+    border-bottom: 1px solid lightgray;
 }
 
 #title-display, #title-edit, .title{
@@ -91,5 +92,6 @@ export default {
     color: green;
     background-color: white;
 }
+
 
 </style>

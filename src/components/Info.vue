@@ -117,8 +117,8 @@ export default {
 }
 
 #empty-space{
-    margin-top: 10px;
-    height: 45px;
+    /* margin-top: 10px; */
+    height: 55px;
     background:white;
     border-bottom: 1px solid lightgray;
 }
@@ -126,7 +126,8 @@ export default {
 #empty-space-text{
     font-family: 'Libre Franklin', sans-serif;
     font-size: 14px;
-    padding-top: 10px;
+    /* padding-top: 10px; */
+    line-height: 55px;
 }
 
 @media (max-width:1100px){

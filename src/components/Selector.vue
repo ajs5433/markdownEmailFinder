@@ -70,6 +70,10 @@
                         </el-tooltip>
                     </div>
                     <div>
+                        <!-- <el-tooltip v-if="filters.buttons.market===''" content="Select timezone" placement="right">
+                            <el-date-picker :disabled="true">
+                            </el-date-picker>
+                        </el-tooltip> -->
                         <el-date-picker
                             class="date-input"
                             :id="'dateinput-' + dateInput.key"
@@ -80,8 +84,8 @@
                                 step: '00:10'
                             }"
                             :disabled="false && filters.buttons.market===''"
-                            format="yyyy-MM-dd HH:mm:SS"
-                            :value-format="datetimeFormat[filters.buttons.market]"
+                            format="yyyy-MM-dd hh:mm A"
+                            value-format="yyyy-MM-dd hh:mm A"
                             placeholder="Select date and time">
                         </el-date-picker>
                     </div>
@@ -112,14 +116,13 @@ export default {
             lastCommId: 0,
             startTimeStr: '**Start Date Time:** ',
             endTimeStr: '**End Date Time:** ',
-            delete:'',
             datetimeFormat:{
                 US: "MM-dd-yyyy hh:mm A",
-                UK: 'dd-MM-yyyy hh:mm A'
+                UK: 'dd-MM-yyyy hh:mm A',
             },
             timezone:{
                 US: "ET",
-                UK: 'BST'
+                UK: 'BST',
             },
             vmodels:{
                 inputFields:{
@@ -285,20 +288,40 @@ export default {
             this.vmodels.checkbox.start_time = !this.vmodels.checkbox.start_time;
 
         var startT = ''
-        if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time)
-            startT = `${this.startTimeStr} ${this.vmodels.dateSelections.start_time} ${this.timezone[this.filters.buttons.market]}`
+        if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time){
+            var [date, ...time] = this.vmodels.dateSelections.start_time.split(' ')
+            var [year, month, day]  = date.split('-')
+            var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
+            dateFormatted = [ dateFormatted ].concat(time).join(' ')
+            var timezone = this.timezone[this.filters.buttons.market] || ''
+            startT = `${this.startTimeStr} ${dateFormatted} ${timezone}`
+        }
         this.$store.commit('changeStartTime', startT)  
     },
     modifyEndTime(event){
         if(event.target)                                                                // date events(changing date/datetime) do not have target
             this.vmodels.checkbox.end_time = !this.vmodels.checkbox.end_time;
-
         var endT = ''
-        if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time)
-            endT = `${this.endTimeStr} ${this.vmodels.dateSelections.end_time} ${this.timezone[this.filters.buttons.market]}`
-
+        if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time){
+            var [date, ...time] = this.vmodels.dateSelections.end_time.split(' ')
+            var [year, month, day]  = date.split('-')
+            var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
+            dateFormatted = [ dateFormatted ].concat(time).join(' ')
+            var timezone = this.timezone[this.filters.buttons.market] || ''
+            endT = `${this.endTimeStr} ${dateFormatted} ${timezone}`
+        }
         this.$store.commit('changeEndTime', endT)  
     },
+    // modifyEndTime(event){
+
+    //     if(event.target)                                                                // date events(changing date/datetime) do not have target
+    //         this.vmodels.checkbox.end_time = !this.vmodels.checkbox.end_time;
+    //     var endT = ''
+    //     if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time)
+    //         endT = `${this.endTimeStr} ${this.vmodels.dateSelections.end_time} ${this.timezone[this.filters.buttons.market]}`
+
+    //     this.$store.commit('changeEndTime', endT)  
+    // },
     queryService(queryString, callback){
         var results = queryString ? this.services.filter(service=>{
             var regex = new RegExp(queryString, 'i');
@@ -336,15 +359,14 @@ export default {
         });
       },
       startOver(){
-            console.log(this.$store.state.templates)
-            
             this.index = 0;
             this.lastCommId = 0;
             this.timezone = 0;
 
             // vmodels contain all data where the user can manually edit info
-            for (var types in this.vmodels){
-                for (var property in types){
+            for (var types of Object.keys(this.vmodels)){
+                for (var property of Object.keys(this.vmodels[types])){
+                    // console.log(property, types)
                     if (typeof this.vmodels[types][property]=='boolean')
                         this.vmodels[types][property] = false
                     else
@@ -353,8 +375,8 @@ export default {
             }
 
             // filters are selection of fields, filterType is only a set of buttons that work as radiobuttons
-            for (var selectionType in this.filters){
-                for (var property in selectionType){
+            for (var selectionType of Object.keys(this.filters)){
+                for (var property of Object.keys(this.filters[selectionType])){
                     this.filters[selectionType][property] = ''
                 }
             }
@@ -371,11 +393,14 @@ export default {
 
         var property = element.name
         var value    = element.dataset.string
-
-        // console.log(this.filters)
         this.filters.buttons[property] = value
 
-        // console.log()
+        // update time format if market is updated
+        if(property == 'market'){
+            this.modifyStartTime('')
+            this.modifyEndTime('')
+        }
+
       },
 
       // check this, numbers repeat sometimes

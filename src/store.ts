@@ -92,6 +92,10 @@ export default new Vuex.Store({
     changeEndTime(state, time){
       state.endTime = time
     },
+    changeTime(state, time){
+      state.startTime = time.startTime
+      state.endTime   = time.endTime
+    },
     setCommId(state, id){
       state.lastCommId = id
     },
