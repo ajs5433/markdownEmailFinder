@@ -3,10 +3,16 @@
         <el-input class="edit title" v-show="edit" :spellcheck="true" id="title-edit" type="text" v-model="notificationTitle" :rows="1" :cols="10">   </el-input>
         <el-input class="display title" v-show="!edit" :spellcheck="true" id="title-display" type="text" v-model="notificationTitle" :rows="1" :cols="10" :readonly="true">   </el-input>
         
-        <el-input class="edit body" v-show="edit" :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="23" :cols="50">     </el-input>
-        <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/>
+        <el-tooltip v-show="edit" effect="light" content="Do not modify Start/End time manually!" placement="left" size="large">
+            <el-input class="edit body" :spellcheck="true" resize="none" type="textarea" v-model="notificationText" :rows="23" :cols="50">     </el-input>
+        </el-tooltip>
+        <!-- <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/> -->
+        <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="timeUpdatedNotificationtext"/>
         
         <el-button icon="el-icon-edit" class="edit-save-btns" id="edit-btn" v-if="!edit" @click="edit = !edit" size="mini"> EDIT </el-button>
+        <el-tooltip v-if="edit" effect="light" content="Load original notification and discard all changes" placement="top" size="small">
+            <el-button icon="el-icon-close" class="edit-save-btns" id="discard-changes-btn" @click="resetNotificationText" size="mini"> RESET </el-button>
+        </el-tooltip>
         <el-button icon="el-icon-check" class="edit-save-btns" id="save-btn" v-if="edit" @click="edit = !edit" size="mini"> SAVE </el-button>
 
     </div>
@@ -40,8 +46,14 @@ export default {
         // title(){
         //     return this.$store.state.activeTicket?this.$store.state.activeTicket.email_subject:''
         // },
-        markdown(){
-            // return marked(this.notificationText, { sanitize: true })
+        timeUpdatedNotificationtext(){
+            return this.$store.getters.timeUpdatedNotificationText
+        }
+
+    }, 
+    methods:{
+        resetNotificationText(){
+            this.$store.commit('resetNotificationText','')
         }
     }
 }
@@ -85,7 +97,7 @@ export default {
     border: 1px solid orange;
     color: orange;
     background-color: white;
-}
+} 
 
 #save-btn{
     border: 1px solid green;
@@ -93,5 +105,10 @@ export default {
     background-color: white;
 }
 
+#discard-changes-btn{
+    border: 1px solid red;
+    color: red;
+    background-color: white;
+}
 
 </style>

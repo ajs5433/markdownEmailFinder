@@ -21,7 +21,7 @@
             </div>
         </div>    
 
-        <!-- <div id="links">        </div> -->
+        <!-- <div id="links" :class="{'hide':Boolean(keyword.length == 0)}">  ocho      </div> -->
     <!-- </div> -->
 </template>
 
@@ -94,13 +94,17 @@ export default {
 <style scoped>
 #templates-page{
     display: flex;
+    justify-content: center;
 }
 
 #links{
-    display: none;
     background-color: lightblue;
     width: 30%;
     border-left: 1px solid gray;
+}
+
+.hide{
+    display: none;
 }
 
 #main-template{
@@ -149,7 +153,6 @@ pre{
     word-wrap: break-word;       /* Internet Explorer 5.5+ */    
 }
 
-
 @media (max-width:1100px){
     .template{
         width: 80%;
@@ -167,5 +170,6 @@ pre{
       width: 90%;
     }
 }
+
 
 </style>

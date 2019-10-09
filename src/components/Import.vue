@@ -1,7 +1,9 @@
 
 <template>
   <div id="file-drag-drop"> 
-
+    <div>
+      <h3 id="title">Import more notifications</h3>
+    </div>
     <div id="drag-area">
       <input id="load-file-btn" type="file" hidden="hidden" >
 
@@ -151,7 +153,7 @@ export default {
   height: 15rem; 
   width: 400px;
   margin: auto;
-  margin-top: 10rem;
+  margin-top: 6rem;
   text-align: center;
   border-radius: 10px;
   border: 1px dashed gray;
@@ -193,5 +195,8 @@ a:hover {
   width:50px; */
 }
 
+#title{
+  font-family: 'Libre Franklin', sans-serif;
+}
 
 </style>

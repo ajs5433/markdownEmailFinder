@@ -287,31 +287,62 @@ export default {
         if(event.target)                                                                // date events(changing date/datetime) do not have target
             this.vmodels.checkbox.start_time = !this.vmodels.checkbox.start_time;
 
-        var startT = ''
-        if(this.vmodels.dateSelections.start_time && this.vmodels.checkbox.start_time){
+        var startTime = ''                
+        var startTimeDisplay = ''         
+        if(this.vmodels.dateSelections.start_time){
             var [date, ...time] = this.vmodels.dateSelections.start_time.split(' ')
             var [year, month, day]  = date.split('-')
             var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
             dateFormatted = [ dateFormatted ].concat(time).join(' ')
             var timezone = this.timezone[this.filters.buttons.market] || ''
-            startT = `${this.startTimeStr} ${dateFormatted} ${timezone}`
+            startTime = `${this.startTimeStr} ${dateFormatted} ${timezone}`
+            console.log('start',startTime)
+            // for the display time will only be added if checkbox is true
+            if(this.vmodels.checkbox.start_time) 
+                startTimeDisplay = startTime                        
         }
-        this.$store.commit('changeStartTime', startT)  
+        this.$store.commit('changeStartTime', {current: startTime, display: startTimeDisplay})  
     },
     modifyEndTime(event){
         if(event.target)                                                                // date events(changing date/datetime) do not have target
             this.vmodels.checkbox.end_time = !this.vmodels.checkbox.end_time;
-        var endT = ''
-        if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time){
+
+        var endTime = ''                
+        var endTimeDisplay = ''         
+        if(this.vmodels.dateSelections.end_time){
             var [date, ...time] = this.vmodels.dateSelections.end_time.split(' ')
             var [year, month, day]  = date.split('-')
             var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
             dateFormatted = [ dateFormatted ].concat(time).join(' ')
             var timezone = this.timezone[this.filters.buttons.market] || ''
-            endT = `${this.endTimeStr} ${dateFormatted} ${timezone}`
+            endTime = `${this.endTimeStr} ${dateFormatted} ${timezone}`
+
+            // for the display time will only be added if checkbox is true
+            if(this.vmodels.checkbox.end_time) 
+                endTimeDisplay = endTime                        
         }
-        this.$store.commit('changeEndTime', endT)  
+        this.$store.commit('changeEndTime', {current: endTime, display: endTimeDisplay})  
     },
+
+    // most recent
+    //     modifyEndTime(event){
+    //     if(event.target)                                                                // date events(changing date/datetime) do not have target
+    //         this.vmodels.checkbox.end_time = !this.vmodels.checkbox.end_time;
+    //     var endT = ''
+    //     if(this.vmodels.dateSelections.end_time && this.vmodels.checkbox.end_time){
+    //         var [date, ...time] = this.vmodels.dateSelections.end_time.split(' ')
+    //         var [year, month, day]  = date.split('-')
+    //         var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
+    //         dateFormatted = [ dateFormatted ].concat(time).join(' ')
+    //         var timezone = this.timezone[this.filters.buttons.market] || ''
+    //         endT = `${this.endTimeStr} ${dateFormatted} ${timezone}`
+    //     }
+    //     this.$store.commit('changeEndTime', endT)  
+    // },
+
+
+
+
     // modifyEndTime(event){
 
     //     if(event.target)                                                                // date events(changing date/datetime) do not have target
@@ -467,11 +498,18 @@ export default {
     padding: 8px 10px 8px 10px;
     margin: 0;
     border: 1px solid lightgray;
+    border-left: none;
+    border-right: none;
+}
+
+.button-area:first-child{
+    border-top: none;
 }
 
 .button-area:last-child{
     border-bottom:none;
 }
+
 .grid-row-container{
     display: grid;
     grid-template-rows: 100%;
@@ -528,6 +566,8 @@ export default {
 .el-button:hover{
     color:darkred;
     background-color: orange;
+    background-color: #F2DDA4;
+    background-color: #D9B8C4;
     background-color: pink;
 }
 

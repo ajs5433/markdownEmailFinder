@@ -121,6 +121,8 @@ export default {
     height: 55px;
     background:white;
     border-bottom: 1px solid lightgray;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 #empty-space-text{

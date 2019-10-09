@@ -10,14 +10,19 @@ export default new Vuex.Store({
     editedNotificationTitle: '',
     editedNotificationText: '',
     activeTicket: [],
+    allCommId: [],
     lastCommId: 0,
     keyword: '',
     ticketInfo: TicketFields,
     tickets : [],
     filteredTickets: [],
     index: 0,
-    startTime: '',
-    endTime: '',
+    startTime: '**Start Date Time:** ',                                            // start/end time is the value set with the date input
+    endTime: '**End Date Time:** ',
+    startTimeDisplay: '',                                     // start/end timedisplay depends on wether the checkbox is marked or not. Time that is going to be displayed
+    endTimeDisplay: '',
+    startTimeRegex : /(\*\*.*Start.*Date.*Time.*)/,
+    endTimeRegex : /(\*\*.*End.*Date.*Time.*)/,
     templates:{
       incidents,
       maintenances
@@ -39,43 +44,97 @@ export default new Vuex.Store({
     //   var ticket:Ticket = getter.activeTickets[state.index]
     //   return ticket
     // },
+    // notificationText(state){
+    //   var currentText = ''
+
+    //   if(state.activeTicket)
+    //     // currentText = state.activeTicket.email_content || ' '
+    //     currentText = state.editedNotificationText || (state.activeTicket.email_content || ' ')
+
+    //   return currentText
+    // },
     notificationText(state){
-      var startTime = state.startTime 
-      var endTime = state.endTime 
+      var startTime        = state.startTime 
+      var endTime          = state.endTime 
+      var startTimeRegex   = state.startTimeRegex
+      var endTimeRegex     = state.endTimeRegex
+      var notificationText = state.editedNotificationText
 
-      var startTimeRegex = /(\*\*Start.*Date.*Time.*)/
-      var endTimeRegex = /(\*\*End.*Date.*Time.*)/
-      var currentText = ''
+      // console.log(startTime, endTime)
 
-      if(state.activeTicket)
-        currentText = state.activeTicket.email_content || ' '
-        // currentText = state.editedNotificationText || (state.activeTicket.email_content || ' ')
-
-      if (endTimeRegex.test(currentText) && startTimeRegex.test(currentText))
-        currentText = currentText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
-      else if(endTimeRegex.test(currentText))
-        currentText = currentText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
-      else if(startTimeRegex.test(currentText))
-        currentText = currentText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
+      if (endTimeRegex.test(notificationText) && startTimeRegex.test(notificationText))
+          console.log(1)
+      else if(endTimeRegex.test(notificationText))
+          console.log(2)
+      else if(startTimeRegex.test(notificationText))
+          console.log(3)
       else
-        currentText = currentText + '\n\n' + startTime + '\n\n'+ endTime 
+        console.log(4)
 
-      // return state.editedNotificationText || currentText;
-      return currentText;
+      if (endTimeRegex.test(notificationText) && startTimeRegex.test(notificationText))
+          notificationText = notificationText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
+      else if(endTimeRegex.test(notificationText))
+          notificationText = notificationText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
+      else if(startTimeRegex.test(notificationText))
+          notificationText = notificationText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
+      else
+          notificationText = notificationText + '\n\n' + startTime + '\n\n'+ endTime 
+
+      // console.log(notificationText)
+
+      return notificationText || ''
+    },
+    timeUpdatedNotificationText(state, getters){
+      var notificationText = getters.notificationText
+      
+      var textWithCorrectTime = notificationText.replace(state.startTime, state.startTimeDisplay)
+                                                .replace(state.endTime, state.endTimeDisplay)
+
+      return textWithCorrectTime;
+      // var startTime = state.startTime 
+      // var endTime = state.endTime 
+      // var startTimeRegex = /(\*\*Start.*Date.*Time.*)/
+      // var endTimeRegex = /(\*\*End.*Date.*Time.*)/
+      // var currentText = getters.notificationText
+      
+      // console.log(currentText)
+
+      // if (endTimeRegex.test(currentText) && startTimeRegex.test(currentText))
+      //     currentText = currentText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
+      // else if(endTimeRegex.test(currentText))
+      //     currentText = currentText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
+      // else if(startTimeRegex.test(currentText))
+      //     currentText = currentText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
+      // else
+      //     currentText = currentText + '\n\n' + startTime + '\n\n'+ endTime 
+
+      // return currentText;
     },
     notificationTitle(state){
+
       var currentText = ''
 
       if(state.activeTicket)
         currentText = state.activeTicket.email_subject || ' '
 
-      return currentText
-      // return state.editedNotificationTitle || currentText;
+      return state.editedNotificationTitle || currentText;
     }
   },
   mutations: {
+    // addTickets(state, tickets){
+    //   state.tickets = state.tickets.concat(tickets)
+    // }, 
     addTickets(state, tickets){
-      state.tickets = state.tickets.concat(tickets)
+      if(!tickets)
+        return
+
+      tickets.forEach((t: Ticket) =>{
+        if(!state.allCommId.includes(t.comm_id)){
+          state.allCommId.push(t.comm_id)
+          state.tickets.push(t)
+        }
+      })
+      // state.tickets = state.tickets.concat(tickets)
     }, 
     // setIndex(state, index){
     //   state.index = index;
@@ -87,15 +146,17 @@ export default new Vuex.Store({
       state.keyword = keyword;
     },
     changeStartTime(state, time){
-      state.startTime = time
+      state.startTime         = time.current
+      state.startTimeDisplay  = time.display
     },
     changeEndTime(state, time){
-      state.endTime = time
+      state.endTime         = time.current
+      state.endTimeDisplay  = time.display
     },
-    changeTime(state, time){
-      state.startTime = time.startTime
-      state.endTime   = time.endTime
-    },
+    // changeTime(state, time){
+    //   state.startTime = time.startTime
+    //   state.endTime   = time.endTime
+    // },
     setCommId(state, id){
       state.lastCommId = id
     },
@@ -105,14 +166,29 @@ export default new Vuex.Store({
     setNotificationTitle(state, value){
       state.editedNotificationTitle = value
     },
+    // setActiveTicket(state,ticket){
+    //   // new active ticket implies that notification text and title have changed
+    //   // previous edits in both need to be set to zero Caleb
+    //   state.editedNotificationText = ''
+    //   state.editedNotificationTitle = ''
+
+    //   // console.log(ticket)
+    //   state.activeTicket = ticket
+    // }
     setActiveTicket(state,ticket){
       // new active ticket implies that notification text and title have changed
       // previous edits in both need to be set to zero Caleb
-      state.editedNotificationText = ''
-      state.editedNotificationTitle = ''
-
-      // console.log(ticket)
+      if(ticket){
+        state.editedNotificationText = ticket.email_content
+        state.editedNotificationTitle = ticket.email_subject
+      }
       state.activeTicket = ticket
+    },
+    resetNotificationText(state,ticket){
+      if(state.activeTicket){
+        state.editedNotificationText  = state.activeTicket.email_content
+        state.editedNotificationTitle = state.activeTicket.email_subject
+      }
     }
   },
   actions: {}

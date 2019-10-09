@@ -43,6 +43,8 @@ export default Vue.extend({
     margin: 5px;
     border-radius: 5px;
     border: 1px solid #1DA1F2;
+    border: 1px solid rgb(64,158,255);
+    border: 1px solid #70163C ;
     border: 1px solid orange ;
     height: 600px;
 }
