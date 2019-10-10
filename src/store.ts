@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { TicketFields, incidents, maintenances } from '@/company/InternalData'
+import { basicInfo, TicketFields, incidents, maintenances } from '@/company/InternalData'
 import { Ticket } from '@/company/Tickets'
 
 Vue.use(Vuex);
@@ -17,12 +17,18 @@ export default new Vuex.Store({
     tickets : [],
     filteredTickets: [],
     index: 0,
-    startTime: '**Start Date Time:** ',                                            // start/end time is the value set with the date input
-    endTime: '**End Date Time:** ',
+    startTime: basicInfo.timeString.startTime ,                                            // start/end time is the value set with the date input
+    endTime: basicInfo.timeString.endTime,
+    phase: basicInfo.timeString.phase,
+    // same as above but immutable, value is never changed
+    startTimeStr: basicInfo.timeString.startTime ,                                            // start/end time is the value set with the date input
+    endTimeStr: basicInfo.timeString.endTime,
+    phaseStr: basicInfo.timeString.phase,
     startTimeDisplay: '',                                     // start/end timedisplay depends on wether the checkbox is marked or not. Time that is going to be displayed
     endTimeDisplay: '',
-    startTimeRegex : /(\*\*.*Start.*Date.*Time.*)/,
-    endTimeRegex : /(\*\*.*End.*Date.*Time.*)/,
+    startTimeRegex : basicInfo.timeRegex.startTime,
+    endTimeRegex : basicInfo.timeRegex.endTime,
+    phaseRegex : basicInfo.timeRegex.phase,
     templates:{
       incidents,
       maintenances
@@ -60,27 +66,14 @@ export default new Vuex.Store({
       var endTimeRegex     = state.endTimeRegex
       var notificationText = state.editedNotificationText
 
-      // console.log(startTime, endTime)
-
-      if (endTimeRegex.test(notificationText) && startTimeRegex.test(notificationText))
-          console.log(1)
-      else if(endTimeRegex.test(notificationText))
-          console.log(2)
-      else if(startTimeRegex.test(notificationText))
-          console.log(3)
-      else
-        console.log(4)
-
       if (endTimeRegex.test(notificationText) && startTimeRegex.test(notificationText))
           notificationText = notificationText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
       else if(endTimeRegex.test(notificationText))
-          notificationText = notificationText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
+          notificationText = notificationText.replace(endTimeRegex,startTime + '\n'+ endTime )
       else if(startTimeRegex.test(notificationText))
-          notificationText = notificationText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
+          notificationText = notificationText.replace(startTimeRegex,startTime + '\n'+ endTime )
       else
           notificationText = notificationText + '\n\n' + startTime + '\n\n'+ endTime 
-
-      // console.log(notificationText)
 
       return notificationText || ''
     },
@@ -125,6 +118,7 @@ export default new Vuex.Store({
     //   state.tickets = state.tickets.concat(tickets)
     // }, 
     addTickets(state, tickets){
+
       if(!tickets)
         return
 
@@ -176,6 +170,7 @@ export default new Vuex.Store({
     //   state.activeTicket = ticket
     // }
     setActiveTicket(state,ticket){
+      console.log('called')
       // new active ticket implies that notification text and title have changed
       // previous edits in both need to be set to zero Caleb
       if(ticket){

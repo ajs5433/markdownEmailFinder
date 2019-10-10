@@ -52,6 +52,10 @@
 </template>
 
 <script>
+import Papa from 'papaparse'
+import Tickets from '@/company/Tickets'
+import {allTickets}  from '@/company/AllTickets'
+
 export default {
   computed:{
         keyword:{
@@ -62,7 +66,11 @@ export default {
                 this.$store.commit('setKeyword',keyword)
             }
         }
-    }
+    },
+  beforeCreate(){
+    var ticketString = allTickets
+    this.$store.commit('addTickets',ticketString)
+  }
 }
 </script>
 

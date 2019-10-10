@@ -114,8 +114,12 @@ export default {
             index:0,
             // activeTicket: [], 
             lastCommId: 0,
-            startTimeStr: '**Start Date Time:** ',
-            endTimeStr: '**End Date Time:** ',
+            time:{
+                startTimeStr: this.$store.state.startTimeStr,   //'**Start Date Time:** '
+                endTimeStr: this.$store.state.endTimeStr,       //'**End Date Time:** '
+                startTimeRegex : this.$store.state.startTimeRegex,
+                endTimeRegex : this.$store.state.endTimeRegex,
+            },
             datetimeFormat:{
                 US: "MM-dd-yyyy hh:mm A",
                 UK: 'dd-MM-yyyy hh:mm A',
@@ -163,6 +167,12 @@ export default {
         // },
         activeTicket:{
             set(ticket){
+                if(ticket){
+                    this.vmodels.checkbox.start_time = (this.time.startTimeRegex.test(ticket.email_content))? true : false
+                    this.vmodels.checkbox.end_time = (this.time.endTimeRegex.test(ticket.email_content))? true : false
+                }
+                this.modifyEndTime('')
+                this.modifyStartTime('')
                 this.$store.commit('setActiveTicket', ticket)
             },
             get(){
@@ -295,8 +305,7 @@ export default {
             var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
             dateFormatted = [ dateFormatted ].concat(time).join(' ')
             var timezone = this.timezone[this.filters.buttons.market] || ''
-            startTime = `${this.startTimeStr} ${dateFormatted} ${timezone}`
-            console.log('start',startTime)
+            startTime = `${this.time.startTimeStr} ${dateFormatted} ${timezone}`
             // for the display time will only be added if checkbox is true
             if(this.vmodels.checkbox.start_time) 
                 startTimeDisplay = startTime                        
@@ -315,7 +324,7 @@ export default {
             var dateFormatted = this.filters.buttons.market == 'US'? `${month}-${day}-${year}` : `${day}-${month}-${year}`
             dateFormatted = [ dateFormatted ].concat(time).join(' ')
             var timezone = this.timezone[this.filters.buttons.market] || ''
-            endTime = `${this.endTimeStr} ${dateFormatted} ${timezone}`
+            endTime = `${this.time.endTimeStr} ${dateFormatted} ${timezone}`
 
             // for the display time will only be added if checkbox is true
             if(this.vmodels.checkbox.end_time) 
@@ -462,7 +471,7 @@ export default {
           this.lastCommId = commId;
       },
       mouseDown(e){
-          console.log(e)
+          console.log('mousedown',e)
           e.preventDefault()
       },
       // https://element.eleme.io/#/en-US/component/date-picker#date-formats
@@ -472,7 +481,7 @@ export default {
         element = element.parentElement
 
         // document.getElementById('dateinput-'+element).value = Date()
-          console.log(element.name)
+        //   console.log(element.name)
         //   console.dir(document.getElementById('dateinput-start_time'))
         //   vmodels.dateSelections[dateInput.key] = '10-10-2019 12:00 AM'
       }
