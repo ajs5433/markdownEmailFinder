@@ -112,9 +112,8 @@
 
                 <div class="button-area">
                     <!-- <el-button id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow <i class="el-icon-top-right"></i></el-button> -->
-                    <!-- <el-tooltip v-if="disableStormcrow" effect="light" content="BUTTON DISABLED. Click Start Over to enable" placement="bottom" size="small"> -->
-                    <el-tooltip v-if="disableStormcrow" effect="light" content="click to include" placement="left" size="small">
-                        <el-button :disabled="true" icon="el-icon-top-right" id="submit-btn" class="main-btn disabled" type='info'>Proceed to Stormcrow </el-button>
+                    <el-tooltip v-if="disableStormcrow" effect="light" content="BUTTON DISABLED. Click 'Start Over' to enable" placement="top" size="large">
+                        <el-button icon="el-icon-top-right" id="submit-btn" class="main-btn disabled" type='info'>Proceed to Stormcrow </el-button>
                     </el-tooltip>
                     <el-button v-else icon="el-icon-top-right" id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow </el-button>
                 </div>
@@ -735,7 +734,8 @@ span.label{
 
 .disabled:hover{
     background-color: #909399 !important ;
-    color: rgb(59, 68, 131)
+    /* color: rgb(59, 68, 131) !important; */
+    cursor: not-allowed !important;
 }
 
 .active-date-btn{
