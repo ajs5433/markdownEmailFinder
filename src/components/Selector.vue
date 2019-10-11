@@ -10,7 +10,15 @@
                 
                 
                 <!-- <el-button id="count" @click="printTickets" > {{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </el-button> -->
+
+                <!-- Caleb
+                Following line does not work, having a computed filteredTicketslength calls the filteredTickets computed property when filter has not changeEndTime
+                call chain: filteredTicketsLength >  filteredTickets > updateIndex > activeTicket > activeTicket calls a method modifyStartTime that modifies the expected behavior 
+
+                fixed by forcing an extra verification lastCommId != ticket.comm_id
+                -->
                 <div id="count"><span>{{filteredTicketsLength>0? this.index +1:0}} of {{ filteredTicketsLength }} </span></div>
+                
                 <div class="flex-row" id="results">
                     <el-button class="nav-btn" @click="changeIndex" name="prev" icon="el-icon-arrow-left"></el-button>
                     <el-button class="nav-btn" @click="changeIndex" name="next" icon="el-icon-arrow-right"></el-button>
@@ -91,6 +99,11 @@
                     </div>
                 </div>
 
+                <div class="grid-row-container">
+                    <span class="label"> Ticket No. </span>
+                    <el-input v-model="vmodels.ticket.number" ></el-input>
+                </div>
+
                 <!-- </div> -->
                 
                 <div style="width: 100%; height: 20px;background-color: rgb(250,250,250)">
@@ -99,7 +112,11 @@
 
                 <div class="button-area">
                     <!-- <el-button id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow <i class="el-icon-top-right"></i></el-button> -->
-                    <el-button icon="el-icon-top-right" id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow </el-button>
+                    <!-- <el-tooltip v-if="disableStormcrow" effect="light" content="BUTTON DISABLED. Click Start Over to enable" placement="bottom" size="small"> -->
+                    <el-tooltip v-if="disableStormcrow" effect="light" content="click to include" placement="left" size="small">
+                        <el-button :disabled="true" icon="el-icon-top-right" id="submit-btn" class="main-btn disabled" type='info'>Proceed to Stormcrow </el-button>
+                    </el-tooltip>
+                    <el-button v-else icon="el-icon-top-right" id="submit-btn" class="main-btn" @click="notificationMessage()" type='success'>Proceed to Stormcrow </el-button>
                 </div>
             </div>
         </div>
@@ -108,12 +125,16 @@
 </template>
 
 <script>
+import {basicInfo} from '@/company/InternalData'
+
 export default {
     data(){
         return{
             index:0,
             // activeTicket: [], 
             lastCommId: 0,
+            emailLink: basicInfo.sendEmailLink ,
+            disableStormcrow : false,
             time:{
                 startTimeStr: this.$store.state.startTimeStr,   //'**Start Date Time:** '
                 endTimeStr: this.$store.state.endTimeStr,       //'**End Date Time:** '
@@ -141,6 +162,9 @@ export default {
                     start_time: false ,
                     end_time: false
                 },
+                ticket: {
+                    number: ''
+                }
             },
             filters:{
                 buttons:{
@@ -150,7 +174,25 @@ export default {
                     market: ''
                 }
             }, 
-            ticketInfo: this.$store.state.ticketInfo
+            ticketInfo: this.$store.state.ticketInfo,
+            emptyTicket: {
+                    comm_id: 0,
+                    incident_id: '',
+                    email_subject: '',
+                    email_content: '',
+                    stormcrow_services: '',
+                    sn_ticket: '',
+                    sn_service: '',
+                    sn_service_location: '',
+                    sn_short_description: '',
+                    sn_description: '',
+                    notification_date: '',
+                    notification_time: '',
+                    organization: '',
+                    market: '',
+                    status: '',
+                    template: '',
+                }
         }
     },
     computed:{
@@ -167,16 +209,18 @@ export default {
         // },
         activeTicket:{
             set(ticket){
-                if(ticket){
+                // console.log('active',ticket)
+                if(ticket && ticket.comm_id != this.lastCommId ){
                     this.vmodels.checkbox.start_time = (this.time.startTimeRegex.test(ticket.email_content))? true : false
                     this.vmodels.checkbox.end_time = (this.time.endTimeRegex.test(ticket.email_content))? true : false
                 }
-                this.modifyEndTime('')
-                this.modifyStartTime('')
+                // console.log('NOW!!')
+                this.modifyEndTime({})
+                this.modifyStartTime({})
                 this.$store.commit('setActiveTicket', ticket)
             },
             get(){
-                return this.$store.getters.activeTicket
+                return this.$store.state.activeTicket
             }
         },
         activeTickets(){
@@ -187,11 +231,11 @@ export default {
             var regex2 = new RegExp(this.vmodels.inputFields.sn_service_location);
             var index = 0;
             var lastCommId = this.lastCommId;
-            this.updateIndex()
+            // this.updateIndex()
             var filteredT = this.activeTickets.filter(t=>{
                 if(!regex1.test(t.sn_service) || !regex2.test(t.sn_service_location))
                     return false
-                
+
                 for (var filter of Object.entries(this.filters.buttons)){
                     var [prop, val] = filter
                     if(val && t[prop] != val)
@@ -207,14 +251,15 @@ export default {
                     if(t.comm_id==lastCommId)
                         index = i;
                 })
-    
+
                 this.updateIndex(index, filteredT[index], filteredT[index].comm_id)
-            }
+            }else
+                this.updateIndex( 0 , this.emptyTicket , 0)
             
             // this.index = index
             // this.$store.commit('setIndex',index)
             // this.$store.commit('setCommId', this.activeTickets[index].comm_id)
-
+            this.filteredTickesSize  = filteredT.length
             return filteredT;
         },
         filteredTicketsLength(){
@@ -294,9 +339,13 @@ export default {
     //     this.$store.commit('changeEndTime', endT)  
     // },
     modifyStartTime(event){
-        if(event.target)                                                                // date events(changing date/datetime) do not have target
-            this.vmodels.checkbox.start_time = !this.vmodels.checkbox.start_time;
-
+        // console.log(this.vmodels.checkbox.start_time)
+        // console.log(event.target)
+        if(event)
+            if(event.target)                                                                // date events(changing date/datetime) do not have target
+                this.vmodels.checkbox.start_time = !this.vmodels.checkbox.start_time;
+        
+        // console.log(this.vmodels.checkbox.start_time)
         var startTime = ''                
         var startTimeDisplay = ''         
         if(this.vmodels.dateSelections.start_time){
@@ -389,16 +438,55 @@ export default {
         // console.log(item);
       },
       notificationMessage(){
-          this.$message({
-        //   title: 'Error',
-          showClose: true,
-          duration: 5000,
-          offset: 180,
-          message: 'message',
-          type: 'error'
-        });
+        
+        var message = ''
+        
+        for(var filter of Object.keys(this.filters.buttons)){
+            if (!this.filters.buttons[filter]){
+                var options = this.filteringOptions.buttons[filter].options.map(opt=>opt.name).join(', ')
+                message = `Error! missing field '${filter}'. Please choose one of these options:   ${options}`    
+            }
+        }
+
+        if (message){
+            this.$message({  title: 'Error', duration: 7000, offset: 180,  message, type: 'error' });        
+            return
+        }
+        
+        if(this.vmodels.checkbox.start_time && !this.vmodels.dateSelections.start_time){
+            message = 'Start Time is selected but no date has been specified'
+            this.$message({  title: 'Error', duration: 7000, offset: 180,  message, type: 'error' });        
+            return
+        }
+
+        if(this.vmodels.checkbox.end_time && !this.vmodels.dateSelections.end_time){
+            message = 'End Time is selected but no date has been specified'
+            this.$message({  title: 'Error', duration: 7000, offset: 180,  message, type: 'error' });        
+            return
+        }
+
+        if(this.$store.state.editing){
+            message = 'In order to continue please exit EDIT mode'
+            this.$message({  title: 'Error', duration: 7000, offset: 180,  message, type: 'error',showClose: true });        
+            return
+        }
+
+        if(!this.vmodels.ticket.number){
+            message = 'You need to include ticket number'
+            this.$message({  title: 'Error', duration: 7000, offset: 180,  message, type: 'error',showClose: true });        
+            return
+        }else if(!/(INC|CHG)\d{7}/.test(this.vmodels.ticket.number)){
+            message = 'Warning: Message not in format INC0000000'
+            this.$message({  duration: 200000, offset: 180,  message, type: 'warning',showClose: true });        
+        }
+
+        window.open(this.emailLink,'_blank')
+        this.disableStormcrow = true;
+        
       },
       startOver(){
+            // console.log('active is ', this.activeTicket.comm_id)
+            this.disableStormcrow = false
             this.index = 0;
             this.lastCommId = 0;
             this.timezone = 0;
@@ -406,7 +494,7 @@ export default {
             // vmodels contain all data where the user can manually edit info
             for (var types of Object.keys(this.vmodels)){
                 for (var property of Object.keys(this.vmodels[types])){
-                    // console.log(property, types)
+                    // console.log(property, types)3
                     if (typeof this.vmodels[types][property]=='boolean')
                         this.vmodels[types][property] = false
                     else
@@ -445,8 +533,12 @@ export default {
 
       // check this, numbers repeat sometimes
       changeIndex(event){
-        if (this.filteredTicketsLength==0)
+          
+        if (!this.filteredTicketsLength){
+            this.updateIndex( 0 , this.emptyTicket , 0)
             return
+        }
+
 
         var element = event.target
 
@@ -457,10 +549,11 @@ export default {
             this.index = (this.index==0)? this.filteredTicketsLength-1 : this.index - 1;
         else if(element.name==='next')
             this.index = (this.index==this.filteredTicketsLength-1)? 0 : this.index + 1;
-        // console.log(this.index)
         
-        if(this.filteredTicketsLength)
-            this.updateIndex(this.index, this.filteredTickets[this.index], this.filteredTickets[this.index].comm_id)
+        // if(this.filteredTicketsLength)
+        this.updateIndex(this.index, this.filteredTickets[this.index], this.filteredTickets[this.index].comm_id)
+
+        // console.log(this.filteredTicketsLength, this.activeTicket.comm_id)
       },
       printTickets(){
           console.log(this.activeTickets)
@@ -631,9 +724,18 @@ export default {
     font-size: 13px;
 }
 
+span.label{
+    line-height: 40px;
+}
+
 .el-date-editor.el-input{
     box-sizing:border-box;
     width: 100%;
+}
+
+.disabled:hover{
+    background-color: #909399 !important ;
+    color: rgb(59, 68, 131)
 }
 
 .active-date-btn{

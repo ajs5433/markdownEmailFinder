@@ -23,7 +23,6 @@ export default {
     data(){
         return{
             notif: '',
-            edit : false
         }
     },
     computed:{
@@ -33,6 +32,14 @@ export default {
             },
             set(modification){
                 this.$store.commit('setNotificationText',modification)
+            }
+        },
+        edit:{
+            get(){
+                return this.$store.state.editing
+            },
+            set(val){
+                this.$store.commit('setEditing',val)
             }
         },
         notificationTitle:{

@@ -9,6 +9,7 @@ export default new Vuex.Store({
   state: {
     editedNotificationTitle: '',
     editedNotificationText: '',
+    editing: false,
     activeTicket: [],
     allCommId: [],
     lastCommId: 0,
@@ -69,9 +70,9 @@ export default new Vuex.Store({
       if (endTimeRegex.test(notificationText) && startTimeRegex.test(notificationText))
           notificationText = notificationText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
       else if(endTimeRegex.test(notificationText))
-          notificationText = notificationText.replace(endTimeRegex,startTime + '\n'+ endTime )
+          notificationText = notificationText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
       else if(startTimeRegex.test(notificationText))
-          notificationText = notificationText.replace(startTimeRegex,startTime + '\n'+ endTime )
+          notificationText = notificationText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
       else
           notificationText = notificationText + '\n\n' + startTime + '\n\n'+ endTime 
 
@@ -170,7 +171,7 @@ export default new Vuex.Store({
     //   state.activeTicket = ticket
     // }
     setActiveTicket(state,ticket){
-      console.log('called')
+      console.log(ticket)
       // new active ticket implies that notification text and title have changed
       // previous edits in both need to be set to zero Caleb
       if(ticket){
@@ -184,6 +185,9 @@ export default new Vuex.Store({
         state.editedNotificationText  = state.activeTicket.email_content
         state.editedNotificationTitle = state.activeTicket.email_subject
       }
+    },
+    setEditing(state, bool){
+      state.editing = bool;
     }
   },
   actions: {}

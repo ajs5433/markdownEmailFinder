@@ -68,8 +68,9 @@ export default {
         }
     },
   beforeCreate(){
-    var ticketString = allTickets
-    this.$store.commit('addTickets',ticketString)
+    var tickets = Tickets.removeFaultyTickets(allTickets, false);
+    Tickets.addProperties(tickets)
+    this.$store.commit('addTickets',tickets)
   }
 }
 </script>
