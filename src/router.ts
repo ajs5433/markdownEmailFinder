@@ -7,7 +7,7 @@ import NotificationsPage from "./views/NotificationsPage.vue";
 Vue.use(Router);
 
 export default new Router({
-  mode: 'hash',
+  mode: "hash",
   routes: [
     {
       path: "/",
