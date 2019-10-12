@@ -176,6 +176,7 @@ export default new Vuex.Store({
       if (!tickets) return;
 
       tickets.forEach((t: Ticket) => {
+
         if (!state.allCommId.includes(t.comm_id)) {
           state.allCommId.push(t.comm_id);
           state.tickets.push(t);
