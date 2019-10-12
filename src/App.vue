@@ -1,15 +1,11 @@
 <template>
   <div id="app">
-    <!-- <div id="nav"> -->
-    <!-- <el-container> -->
     <div id="top">
       <el-header id="header">
         <div id="import-icon">
-          <!-- <el-tooltip class="item" effect="dark" content="Import more notifications" placement="bottom-end"> -->
           <router-link to="/import">
             <el-button id="icon-upload" icon="el-icon-upload"></el-button>
           </router-link>
-          <!-- </el-tooltip> -->
         </div>
 
         <div id="nav-bar">
@@ -29,29 +25,21 @@
         </div>
       </el-header>
       <div id="search-bar">
-        <!-- <el-row id="search-bar"> -->
         <el-input v-model="keyword" placeholder="Search Keyword"></el-input>
-        <!-- <el-button icon="el-icon-refresh-left" size="small"> </el-button> -->
-        <!-- <el-badge :value="filteredTicketsLength" class="item"> -->
-        <!-- <el-button size="small">results</el-button> -->
-        <!-- </el-badge> -->
-        <!-- </el-row> -->
+
       </div>
     </div>
     <el-main id="main">
       <router-view />
     </el-main>
-    <!-- </el-container>  -->
-    <!-- <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> -->
-    <!-- </div> -->
+
   </div>
 </template>
 
 <script>
 import Papa from "papaparse";
-import Tickets from "@/company/Tickets";
-import { allTickets } from "@/company/AllTickets";
+import Tickets from "@/companyX/Tickets";
+import { allTickets } from "@/companyX/AllTickets";
 
 export default {
   computed: {
@@ -86,7 +74,6 @@ body {
 }
 
 #header {
-  /* background: linear-gradient(141deg, #0fb8ad, #1fc8db 51%, #2cb5e8 75%); */
   color: white;
   text-align: center;
   height: 80px;
@@ -97,9 +84,7 @@ body {
   border-bottom: 2px solid lightgray;
 }
 
-/* change back */
 #app {
-  /* font-family: "Avenir", Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -125,7 +110,6 @@ body {
   color: #cfd8dc;
   margin: 0 8px;
   text-decoration: none;
-  /* border: 1px solid red; */
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 13px;
@@ -149,7 +133,6 @@ body {
 #icon-upload:hover {
   color: #2c3e50;
   background-color: white;
-  /* border: 2px solid white; */
 }
 
 #icon-info {
@@ -169,8 +152,6 @@ body {
 #search-bar {
   padding: 0 20%;
   margin: 35px;
-  /* margin-top: 135px; */
-  /* margin-bottom: 40px; */
   z-index: 10;
 }
 
@@ -178,8 +159,6 @@ body {
   top: 0;
   position: fixed;
   width: 100%;
-  /* background-color: white; */
-  /* background-color: rgb(256,256,256,0.92) */
   background: linear-gradient(red 75%, yellow);
   background: linear-gradient(
     rgb(256, 256, 256, 1) 75%,
@@ -191,6 +170,5 @@ body {
 #main {
   margin-top: 150px;
   padding: 80px;
-  /* background-color: red; */
 }
 </style>

@@ -38,11 +38,6 @@
       </div>
     </div>
 
-    <!-- <div>  
-            <div v-for="match in matches" :key="match.title">
-                <a :href="'#'+match.title">{{match.title}}</a>
-            </div>
-        </div> -->
   </div>
 </template>
 
@@ -65,7 +60,6 @@ export default {
 
           var regex = new RegExp(keyword, "i");
           if (!regex.test(inc.title)) {
-            // if(!regex.test(inc.body) && !regex.test(inc.title)){
             passed = false;
             break;
           }
@@ -87,7 +81,6 @@ export default {
 
             var regex = new RegExp(keyword, "i");
             if (!regex.test(maint.title)) {
-              // if(!regex.test(maint.body) && !regex.test(maint.title)){
               passed = false;
               break;
             }
@@ -102,13 +95,6 @@ export default {
       return this.incidents.concat(this.maintenances);
     }
 
-    // maintenances(){
-    //     var regex = new RegExp(this.keyword,'i')
-    //     var maintenances = this.$store.state.templates.maintenances.filter(maint =>{
-    //         return regex.test(maint.title) || regex.test(maint.body)
-    //     })
-    //     return maintenances
-    // }
   },
   methods: {}
 };
@@ -142,9 +128,7 @@ export default {
   margin: 7px;
   width: 50%;
   text-align: center;
-  /* min-width: 500px; */
-  /* width: 800px; */
-  /* min-width: 50% */
+
 }
 
 .template:hover {

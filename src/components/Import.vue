@@ -5,8 +5,6 @@
     </div>
     <div id="drag-area">
       <input id="load-file-btn" type="file" hidden="hidden" />
-
-      <!-- <input type="button" id="fake-btn" value="Choose File"> -->
       <i class="el-icon-upload"></i>
       <p id="message">
         Drag file here or click to Upload
@@ -32,8 +30,8 @@
 </template>
 
 <script>
-import Instructions from "@/company/components/Instructions";
-import Tickets from "@/company/Tickets";
+import Instructions from "@/companyX/components/Instructions";
+import Tickets from "@/companyX/Tickets";
 import Papa from "papaparse";
 
 // https://www.raymondcamden.com/2019/08/08/drag-and-drop-file-upload-in-vuejs
@@ -90,12 +88,8 @@ export default {
       let reader = new FileReader();
 
       progressBar.style.display = "block";
-
-      /* To modify later!! */
       reader.onprogress = e => {
         var percentage = parseFloat(((e.loaded * 100) / e.total).toFixed(2));
-        // var percentage =  parseInt( (( e.loaded * 100 ) / e.total)  )
-        // var percentage =  e.loaded * 100  / e.total
         showProgress(percentage);
 
         progressBar.value = e.loaded;
@@ -105,14 +99,7 @@ export default {
       reader.onload = function(e) {
         var data = e.currentTarget.result;
         progressBar.style.display = "none";
-        // old
-        // var csvToTickets = new CSVParser()
-        // csvToTickets.load(data)
-
-        // console.log('start processing')
         processCSV(data);
-
-        // console.log('done processing')
       };
       reader.readAsText(inputFile);
     }
@@ -129,8 +116,6 @@ export default {
           tickets = Tickets.removeFaultyTickets(results.data, false);
           Tickets.addProperties(tickets);
           self.$store.commit("addTickets", tickets);
-
-          // console.log(tickets.length)
         }
       });
     }
@@ -139,8 +124,6 @@ export default {
 </script>
 
 <style scoped>
-/* Scoped ruins it */
-
 #drag-area {
   display: flex;
   flex-direction: column;
@@ -187,8 +170,6 @@ a:hover {
 
 #progress-bar::-webkit-progress-bar {
   display: none;
-  /* border-radius: 5px;
-  width:50px; */
 }
 
 #title {

@@ -5,39 +5,38 @@ import {
   TicketFields,
   incidents,
   maintenances
-} from "@/company/InternalData";
-import { Ticket } from "@/company/Tickets";
+} from "@/companyX/InternalData";
+import { Ticket } from "@/companyX/Tickets";
 
 Vue.use(Vuex);
 
 interface MyState {
-    editedNotificationTitle: string;
-    editedNotificationText: string;
-    editing: boolean;
-    activeTicket: Ticket;
-    allCommId: string[];
-    lastCommId: number | string;
-    keyword: string;
-    ticketInfo: Object;
-    tickets: Ticket[];
-    filteredTickets: Ticket[];
-    ticketURL: {incident:string, change: string};
-    ticketNumber: string;
-    index: number;
-    startTime: string;
-    endTime: string;
-    phase: string;
-    startTimeStr: string;
-    endTimeStr: string;
-    phaseStr: string;
-    startTimeDisplay: string;
-    endTimeDisplay: string;
-    startTimeRegex: RegExp;
-    endTimeRegex: RegExp;
-    phaseRegex: RegExp;
-    templates: {incidents:Object[], maintenances: Object[]} 
+  editedNotificationTitle: string;
+  editedNotificationText: string;
+  editing: boolean;
+  activeTicket: Ticket;
+  allCommId: string[];
+  lastCommId: number | string;
+  keyword: string;
+  ticketInfo: Object;
+  tickets: Ticket[];
+  filteredTickets: Ticket[];
+  ticketURL: { incident: string; change: string };
+  ticketNumber: string;
+  index: number;
+  startTime: string;
+  endTime: string;
+  phase: string;
+  startTimeStr: string;
+  endTimeStr: string;
+  phaseStr: string;
+  startTimeDisplay: string;
+  endTimeDisplay: string;
+  startTimeRegex: RegExp;
+  endTimeRegex: RegExp;
+  phaseRegex: RegExp;
+  templates: { incidents: Object[]; maintenances: Object[] };
 }
-
 
 export default new Vuex.Store<MyState>({
   state: {
@@ -45,7 +44,7 @@ export default new Vuex.Store<MyState>({
     editedNotificationText: "",
     editing: false,
     activeTicket: {
-      comm_id: '0',
+      comm_id: "0",
       incident_id: "",
       email_subject: "",
       email_content: "",
@@ -105,19 +104,7 @@ export default new Vuex.Store<MyState>({
         })
         .reverse();
     },
-    // activeTicket(state, getter){
-    //   var ticket:Ticket = getter.activeTickets[state.index]
-    //   return ticket
-    // },
-    // notificationText(state){
-    //   var currentText = ''
 
-    //   if(state.activeTicket)
-    //     // currentText = state.activeTicket.email_content || ' '
-    //     currentText = state.editedNotificationText || (state.activeTicket.email_content || ' ')
-
-    //   return currentText
-    // },
     notificationText(state) {
       var startTime = state.startTime;
       var endTime = state.endTime;
@@ -126,8 +113,6 @@ export default new Vuex.Store<MyState>({
       var endTimeRegex = state.endTimeRegex;
       var phaseRegex = state.phaseRegex;
       var notificationText = state.editedNotificationText;
-
-      // console.log("before", notificationText)
 
       if (phaseRegex.test(notificationText)) {
         var dummyText = "aosdijadsoijasdoijafohfohisdfohfsosijgfs!asd3";
@@ -158,8 +143,6 @@ export default new Vuex.Store<MyState>({
         notificationText =
           notificationText + "\n\n" + startTime + "\n\n" + endTime;
 
-      // console.log("after", notificationText)
-
       return notificationText || "";
     },
     timeUpdatedNotificationText(state, getters) {
@@ -178,32 +161,11 @@ export default new Vuex.Store<MyState>({
 
       if (state.endTimeDisplay)
         if (phaseRegex.test(textWithCorrectTime))
-          // var textWithCorrectTime = notificationText.replace(state.startTime, state.startTimeDisplay)
-          //                                           .replace(state.endTime, state.endTimeDisplay)
-
           textWithCorrectTime = textWithCorrectTime
             .replace(startTimeStr, "")
             .replace(endTimeStr, "");
 
       return textWithCorrectTime;
-      // var startTime = state.startTime
-      // var endTime = state.endTime
-      // var startTimeRegex = /(\*\*Start.*Date.*Time.*)/
-      // var endTimeRegex = /(\*\*End.*Date.*Time.*)/
-      // var currentText = getters.notificationText
-
-      // console.log(currentText)
-
-      // if (endTimeRegex.test(currentText) && startTimeRegex.test(currentText))
-      //     currentText = currentText.replace(startTimeRegex,startTime).replace(endTimeRegex,endTime )
-      // else if(endTimeRegex.test(currentText))
-      //     currentText = currentText.replace(endTimeRegex,startTime + '\n\n'+ endTime )
-      // else if(startTimeRegex.test(currentText))
-      //     currentText = currentText.replace(startTimeRegex,startTime + '\n\n'+ endTime )
-      // else
-      //     currentText = currentText + '\n\n' + startTime + '\n\n'+ endTime
-
-      // return currentText;
     },
     notificationTitle(state) {
       var currentText = "";
@@ -215,27 +177,16 @@ export default new Vuex.Store<MyState>({
     }
   },
   mutations: {
-    // addTickets(state, tickets){
-    //   state.tickets = state.tickets.concat(tickets)
-    // },
     addTickets(state, tickets) {
       if (!tickets) return;
 
       tickets.forEach((t: Ticket) => {
-        // automated anotation... Caleb
         if (!state.allCommId.includes(t.comm_id)) {
           state.allCommId.push(t.comm_id);
           state.tickets.push(t);
         }
       });
-      // state.tickets = state.tickets.concat(tickets)
     },
-    // setIndex(state, index){
-    //   state.index = index;
-    // },
-    // setFilteredTickets(state, tickets){
-    //   state.filteredTickets = tickets;
-    // },
     setKeyword(state, keyword) {
       state.keyword = keyword;
     },
@@ -247,10 +198,7 @@ export default new Vuex.Store<MyState>({
       state.endTime = time.current;
       state.endTimeDisplay = time.display;
     },
-    // changeTime(state, time){
-    //   state.startTime = time.startTime
-    //   state.endTime   = time.endTime
-    // },
+
     setCommId(state, id) {
       state.lastCommId = id;
     },
@@ -260,19 +208,10 @@ export default new Vuex.Store<MyState>({
     setNotificationTitle(state, value) {
       state.editedNotificationTitle = value;
     },
-    // setActiveTicket(state,ticket){
-    //   // new active ticket implies that notification text and title have changed
-    //   // previous edits in both need to be set to zero Caleb
-    //   state.editedNotificationText = ''
-    //   state.editedNotificationTitle = ''
 
-    //   // console.log(ticket)
-    //   state.activeTicket = ticket
-    // }
     setActiveTicket(state, ticket) {
-      // console.log(ticket)
       // new active ticket implies that notification text and title have changed
-      // previous edits in both need to be set to zero Caleb
+      // previous edits in both need to be set to zero
       if (ticket) {
         state.editedNotificationText = ticket.email_content;
         state.editedNotificationTitle = ticket.email_subject;

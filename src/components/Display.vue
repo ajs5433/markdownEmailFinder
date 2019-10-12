@@ -44,8 +44,6 @@
       >
       </el-input>
     </el-tooltip>
-    <!-- <VueShowdown id="body-display" class="display body" v-show="!edit" style="text-align:left" :markdown="notificationText"/> -->
-    <!-- <div @click="copyBody"> -->
     <div @click="copyBody">
       <VueShowdown
         id="body-display"
@@ -128,9 +126,7 @@ export default {
         this.$store.commit("setNotificationTitle", modification);
       }
     },
-    // title(){
-    //     return this.$store.state.activeTicket?this.$store.state.activeTicket.email_subject:''
-    // },
+
     timeUpdatedNotificationtext() {
       return this.$store.getters.timeUpdatedNotificationText;
     },

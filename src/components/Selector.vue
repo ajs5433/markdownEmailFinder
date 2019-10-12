@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { basicInfo } from "@/company/InternalData";
+import { basicInfo } from "@/companyX/InternalData";
 
 export default {
   data() {

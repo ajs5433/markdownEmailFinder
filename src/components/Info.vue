@@ -12,8 +12,6 @@
       >
         {{ ticketProperty.label }}
       </div>
-      <!-- <div v-for="(ticketProperty,index ) in propertyToShow" :key="'2-'+index" :style="'grid-row:'+ (index+1) +'/ span 1; gird-col: 2 / span 1'">  {{ticketProperty.value}} </div> -->
-
       <div
         v-for="(ticketProperty, index) in propertyToShow"
         :key="'2-' + index"
@@ -32,7 +30,6 @@
         <div v-else>{{ ticketProperty.value }}</div>
       </div>
     </div>
-    <!-- <a href=""> Go to ticket</a> -->
     <el-button
       id="ticket-btn"
       icon="el-icon-top-right"
@@ -88,7 +85,6 @@ export default {
 
         if (property === this.ticketInfo.stormcrow_services) {
           var splitChar = " | ";
-          // var splitChar = ' ,'
           var rows = 3;
 
           var services = this.ticket[property.name]
@@ -108,17 +104,14 @@ export default {
                     Array(rows - services.length)
                       .join(".")
                       .split(".")
-                  );
-
+                  )
           // Only the first service will have label
           list.push({ label: property.label, value: services[0] });
           for (var i = 1; i < services.length; i++) {
             list.push({ label: "", value: services[i] });
           }
-
           continue;
         }
-
         list.push({ label: property.label, value: this.ticket[property.name] });
       }
       return list;
@@ -155,18 +148,12 @@ export default {
 
 #ticket-info {
   font-size: 12px;
-
   font-family: "Libre Franklin", sans-serif;
   font-size: 11px;
-
   padding: 20px 16px;
-  /* border: 1px solid gray; */
   background-color: rgb(250, 250, 250);
   background-color: transparent;
-  /* background-color: lightskyblue; */
-
   display: grid;
-
   grid-template-rows: repeat(15, 20px);
   grid-template-columns: 150px 150px;
   grid-template-columns: 118px 180px;
@@ -187,7 +174,6 @@ export default {
 }
 
 #empty-space {
-  /* margin-top: 10px; */
   height: 55px;
   background: white;
   border-bottom: 1px solid lightgray;
@@ -196,7 +182,6 @@ export default {
 }
 
 #ticket-btn {
-  /* border: 1px solid gray; */
   background-color: rgb(250, 250, 250);
   color: gray;
 
@@ -212,7 +197,6 @@ export default {
 #empty-space-text {
   font-family: "Libre Franklin", sans-serif;
   font-size: 14px;
-  /* padding-top: 10px; */
   line-height: 55px;
 }
 
