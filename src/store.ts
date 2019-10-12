@@ -10,12 +10,58 @@ import { Ticket } from "@/company/Tickets";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+interface MyState {
+    editedNotificationTitle: string;
+    editedNotificationText: string;
+    editing: boolean;
+    activeTicket: Ticket;
+    allCommId: string[];
+    lastCommId: number | string;
+    keyword: string;
+    ticketInfo: Object;
+    tickets: Ticket[];
+    filteredTickets: Ticket[];
+    ticketURL: {incident:string, change: string};
+    ticketNumber: string;
+    index: number;
+    startTime: string;
+    endTime: string;
+    phase: string;
+    startTimeStr: string;
+    endTimeStr: string;
+    phaseStr: string;
+    startTimeDisplay: string;
+    endTimeDisplay: string;
+    startTimeRegex: RegExp;
+    endTimeRegex: RegExp;
+    phaseRegex: RegExp;
+    templates: {incidents:Object[], maintenances: Object[]} 
+}
+
+
+export default new Vuex.Store<MyState>({
   state: {
     editedNotificationTitle: "",
     editedNotificationText: "",
     editing: false,
-    activeTicket: [],
+    activeTicket: {
+      comm_id: '0',
+      incident_id: "",
+      email_subject: "",
+      email_content: "",
+      stormcrow_services: "",
+      sn_ticket: "",
+      sn_service: "",
+      sn_service_location: "",
+      sn_short_description: "",
+      sn_description: "",
+      notification_date: "",
+      notification_time: "",
+      organization: "",
+      market: "",
+      status: "",
+      template: ""
+    },
     allCommId: [],
     lastCommId: 0,
     keyword: "",
@@ -176,7 +222,7 @@ export default new Vuex.Store({
       if (!tickets) return;
 
       tickets.forEach((t: Ticket) => {
-
+        // automated anotation... Caleb
         if (!state.allCommId.includes(t.comm_id)) {
           state.allCommId.push(t.comm_id);
           state.tickets.push(t);
